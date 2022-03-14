@@ -2,6 +2,8 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal
 
 LABEL maintainer Validated Patterns <team-validated-patterns@redhat.com>
 
+USER root
+
 RUN microdnf install python3-pip git tar -y && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
@@ -17,6 +19,10 @@ pip3 install --no-cache-dir  ansible>=2.9 && \
 pip3 install --no-cache-dir kubernetes openshift boto3>=1.21 botocore>=1.24 awscli>=1.22 azure-cli>=2.34 gcloud --upgrade && \
 ansible-galaxy collection install kubernetes.core 
 
+USER root
+
 RUN microdnf update -y python3-pip && \
 microdnf clean all && \
 rm -rf /var/cache/dnf
+
+USER 1001
