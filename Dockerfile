@@ -22,7 +22,9 @@ ansible-galaxy collection install kubernetes.core
 
 RUN microdnf update -y python3-pip && \
 microdnf clean all && \
-rm -rf /var/cache/dnf 
+rm -rf /var/cache/dnf && \
+mkdir -m 770 /pattern && \
+mkdir -m 770 -p /pattern/.ansible
 
 USER 1001
 
