@@ -24,7 +24,8 @@ RUN microdnf update -y python3-pip && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
 mkdir -m 770 /pattern && \
-mkdir -m 770 -p /pattern/.ansible
+mkdir -m 770 -p /pattern/.ansible && \
+chown -R 1001.1001 /pattern 
 
 USER 1001
 
