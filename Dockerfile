@@ -4,7 +4,7 @@ LABEL maintainer Validated Patterns <team-validated-patterns@redhat.com>
 
 USER root
 
-RUN microdnf install python3-pip make git tar -y && \
+RUN microdnf install python3-pip make git tar vi -y && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
 curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && \
