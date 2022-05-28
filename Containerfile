@@ -16,8 +16,7 @@ curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.10.3/open
 tar xvf openshift-client-linux-4.10.3.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-4.10.3.tar.gz 
 
-RUN pip3 install --no-cache-dir  ansible>=2.9 && \
-pip3 install --no-cache-dir kubernetes openshift boto3>=1.21 botocore>=1.24 awscli>=1.22 azure-cli>=2.34 gcloud --upgrade && \
+RUN pip3 install --no-cache-dir  ansible-core>=2.9 kubernetes openshift boto3>=1.21 botocore>=1.24 awscli>=1.22 azure-cli>=2.34 gcloud --upgrade && \
 ansible-galaxy collection install kubernetes.core && \
 rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE
 
