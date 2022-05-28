@@ -14,7 +14,7 @@ curl -sSL -o /usr/local/bin/helm https://mirror.openshift.com/pub/openshift-v4/x
 chmod +x /usr/local/bin/helm && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.10.3/openshift-client-linux-4.10.3.tar.gz && \
 tar xvf openshift-client-linux-4.10.3.tar.gz -C /usr/local/bin && \
-rm -rf openshift-client-linux-4.10.3.tar.gz 
+rm -rf openshift-client-linux-4.10.3.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl
 
 # humanize is only needed for the trimming of the container
 # See https://github.com/Azure/azure-sdk-for-python/issues/11149
