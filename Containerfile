@@ -1,11 +1,15 @@
-ARG COLLECTIONS_TO_REMOVE="fortinet cisco dellemc f5networks junipernetworks mellanox netapp"
 FROM registry.access.redhat.com/ubi9/ubi-minimal
-
 LABEL maintainer Validated Patterns <team-validated-patterns@redhat.com>
+
+ARG COLLECTIONS_TO_REMOVE="fortinet cisco dellemc f5networks junipernetworks mellanox netapp"
+ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en langpacks-en"
+ARG RPM_TO_FORCEFULLY_REMOVE="cracklib-dicts"
 
 USER root
 
 RUN microdnf install python3-pip make git-core tar vi -y && \
+microdnf remove -y $DNF_TO_REMOVE && \
+rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
 curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && \
