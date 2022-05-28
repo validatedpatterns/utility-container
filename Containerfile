@@ -15,15 +15,11 @@ curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.10.3/open
 tar xvf openshift-client-linux-4.10.3.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-4.10.3.tar.gz 
 
-RUN pip3 install --no-cache-dir pip --upgrade && \
-pip3 install --no-cache-dir  ansible>=2.9 && \
+RUN pip3 install --no-cache-dir  ansible>=2.9 && \
 pip3 install --no-cache-dir kubernetes openshift boto3>=1.21 botocore>=1.24 awscli>=1.22 azure-cli>=2.34 gcloud --upgrade && \
 ansible-galaxy collection install kubernetes.core 
 
-RUN microdnf update -y python3-pip && \
-microdnf clean all && \
-rm -rf /var/cache/dnf && \
-mkdir -m 770 /pattern && \
+RUN mkdir -m 770 /pattern && \
 mkdir -m 770 -p /pattern/.ansible && \
 chown -R 1001.1001 /pattern 
 
