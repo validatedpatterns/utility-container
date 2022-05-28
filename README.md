@@ -12,22 +12,23 @@ Client Version: 4.10.3
 
 ### Installed Software
 
-| name | type | 
-|:----:|:-------:|
+|    name     |  type   |
+|:-----------:|:-------:|
 | python3-pip | package |
-| git | package |
-| helm | binary |
-| tar | package |
-| make | package |
-| argocd | binary |
-| ansible | pip |
-| kubernetes | pip |
-| openshift | pip |
-| boto3 | pip |
-| botocore | pip |
-| awscli | pip |
-| azure-cli | pip |
-| gcloud | pip |
+|  git-core   | package |
+|     vi      | package |
+|    helm     | binary  |
+|     tar     | package |
+|    make     | package |
+|   argocd    | binary  |
+|   ansible   |   pip   |
+| kubernetes  |   pip   |
+|  openshift  |   pip   |
+|    boto3    |   pip   |
+|  botocore   |   pip   |
+|   awscli    |   pip   |
+|  azure-cli  |   pip   |
+|   gcloud    |   pip   |
 
 
 ### The ansible-galaxy collection installed:
