@@ -27,8 +27,11 @@ rm -rf openshift-client-linux-$OPENSHIFT_CLIENT_VERSION.tar.gz  && rm -f /usr/lo
 # The size of the azure sdk is ridiculous because they keep old (and unused
 # APIs) around. We run this azure_sdk_trim.py to prune the unused APIs while
 # still maintaining a good compatibility level
+# We install the collection in /usr/share/ansible/collections
+# https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
+# otherwise whatever user openshift runs the container with won't find the collection
 RUN pip3 install --no-cache-dir "ansible-core>=2.9" kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize --upgrade && \
-ansible-galaxy collection install kubernetes.core && \
+ansible-galaxy collection install --collections-path /usr/share/ansible/collections kubernetes.core && \
 rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python azure_sdk_trim.py && rm azure_sdk_trim.py && pip3 uninstall -y humanize
