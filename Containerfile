@@ -4,22 +4,32 @@ LABEL maintainer Validated Patterns <team-validated-patterns@redhat.com>
 ARG COLLECTIONS_TO_REMOVE="fortinet cisco dellemc f5networks junipernetworks mellanox netapp"
 ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en langpacks-en"
 ARG RPM_TO_FORCEFULLY_REMOVE="cracklib-dicts"
-ARG OPENSHIFT_CLIENT_VERSION="4.10.3"
+# Versions
+ARG OPENSHIFT_CLIENT_VERSION="4.11.25"
+ARG HELM_VERSION="3.10.3"
+ARG ARGOCD_VERSION="2.5.7"
+ARG TKN_CLI_VERSION="0.29.0"
+ARG KUSTOMIZE_VERSION="4.5.6"
 
 USER root
 
-RUN microdnf install -y python3-pip make git-core tar vi && \
+RUN microdnf install -y python3-pip make git-core tar vi jq && \
 microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
-rm -rf /var/cache/dnf && \
-curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && \
+rm -rf /var/cache/dnf  && \
+curl -sfL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 && \
 chmod +x /usr/local/bin/argocd && \
-curl -sSL -o /usr/local/bin/helm https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/helm/latest/helm-linux-amd64 && \
-chmod +x /usr/local/bin/helm && \
-curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OPENSHIFT_CLIENT_VERSION/openshift-client-linux-$OPENSHIFT_CLIENT_VERSION.tar.gz && \
-tar xvf openshift-client-linux-$OPENSHIFT_CLIENT_VERSION.tar.gz -C /usr/local/bin && \
-rm -rf openshift-client-linux-$OPENSHIFT_CLIENT_VERSION.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl
+curl -sLfO https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
+tar xf helm-v${HELM_VERSION}-linux-amd64.tar.gz --strip-component 1 -C /usr/local/bin && \
+chmod +x /usr/local/bin/helm && rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
+curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz && \
+tar xf tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
+rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
+curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
+tar xvf openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
+rm -rf openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
+curl -sLfO https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && tar xvf kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz -C /usr/local/bin && rm -f kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && chmod 755 /usr/local/bin/kustomize
 
 # humanize is only needed for the trimming of the container
 # See https://github.com/Azure/azure-sdk-for-python/issues/11149

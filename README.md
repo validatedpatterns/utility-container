@@ -20,6 +20,7 @@ Client Version: 4.10.3
 |    helm     | binary  |
 |     tar     | package |
 |    make     | package |
+|     jq      | package |
 |   argocd    | binary  |
 |   ansible   |   pip   |
 | kubernetes  |   pip   |
