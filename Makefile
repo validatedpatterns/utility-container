@@ -21,6 +21,7 @@ versions: ## Prints the versions of most tools inside the container
 		echo '* ArgoCD: '; argocd version --client ; \
 		echo '* Tekton: '; tkn version ; \
 		echo '* oc: '; oc version ; \
+		echo '* Python: '; python --version ; \
 		echo '* Ansible: '; ansible --version ; \
 		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core"
 
