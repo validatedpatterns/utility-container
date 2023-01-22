@@ -29,7 +29,11 @@ versions: ## Prints the versions of most tools inside the container
 
 .PHONY: run
 run: ## Runs the container interactively
-	@podman run --rm -it --net=host ${CONTAINER}:${TAG} sh
+	podman run --rm -it --net=host \
+		--security-opt label=disable \
+		-v ${HOME}:/pattern \
+		-v ${HOME}:${HOME} \
+		-w $$(pwd) ${CONTAINER}:${TAG} sh
 
 .PHONY: upload
 upload: build ## Builds and then uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}:${TAG}
