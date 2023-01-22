@@ -22,6 +22,7 @@ versions: ## Prints the versions of most tools inside the container
 		echo '* Tekton: '; tkn version ; \
 		echo '* oc: '; oc version ; \
 		echo '* kustomize: '; kustomize version ; \
+		echo '* yq: '; yq --version ; \
 		echo '* Python: '; python --version ; \
 		echo '* Ansible: '; ansible --version ; \
 		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core"
