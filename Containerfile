@@ -13,7 +13,7 @@ ARG KUSTOMIZE_VERSION="4.5.6"
 
 USER root
 
-RUN microdnf install -y python3-pip make git-core tar vi jq && \
+RUN microdnf install -y python3-pip make git-core tar vi jq which && \
 microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
