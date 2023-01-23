@@ -24,14 +24,17 @@ chmod +x /usr/local/bin/argocd && \
 curl -sLfO https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
 tar xf helm-v${HELM_VERSION}-linux-amd64.tar.gz --strip-component 1 -C /usr/local/bin && \
 chmod +x /usr/local/bin/helm && rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
+rm -f helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
 curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz && \
 tar xf tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
+rm -f tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz && \
 rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
 tar xvf openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
 curl -sLfO https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && tar xvf kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz -C /usr/local/bin && rm -f kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && chmod 755 /usr/local/bin/kustomize && \
-curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && chmod 755 /usr/local/bin/yq
+curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && chmod 755 /usr/local/bin/yq && \
+rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
 # humanize is only needed for the trimming of the container
 # See https://github.com/Azure/azure-sdk-for-python/issues/11149
