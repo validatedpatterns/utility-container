@@ -1,5 +1,6 @@
-CONTAINER="utility-container"
+NAME="utility-container"
 TAG="latest"
+CONTAINER ?= $(NAME):$(TAG)
 
 .PHONY: help
 # No need to add a comment here as help is described in common/
@@ -12,11 +13,11 @@ build: podman-build versions ## Build the container locally and print installed 
 .PHONY: podman-build
 podman-build:
 	@echo "Building the utility container"
-	buildah bud --format docker -f Containerfile -t ${CONTAINER}:${TAG}
+	buildah bud --format docker -f Containerfile -t ${CONTAINER}
 
 .PHONY: versions
 versions: ## Prints the versions of most tools inside the container
-	@podman run --rm -it --net=host ${CONTAINER}:${TAG} sh -c \
+	@podman run --rm -it --net=host ${CONTAINER} sh -c \
 		"echo '* Helm: '; helm version; \
 		echo '* ArgoCD: '; argocd version --client ; \
 		echo '* Tekton: '; tkn version ; \
@@ -33,9 +34,9 @@ run: ## Runs the container interactively
 		--security-opt label=disable \
 		-v ${HOME}:/pattern \
 		-v ${HOME}:${HOME} \
-		-w $$(pwd) ${CONTAINER}:${TAG} sh
+		-w $$(pwd) ${CONTAINER} sh
 
 .PHONY: upload
-upload: build ## Builds and then uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}:${TAG}
-	@echo "Uploading the container to quay.io/hybridcloudpatterns/${CONTAINER}:${TAG}"
-	buildah push localhost/${CONTAINER}:${TAG} quay.io/hybridcloudpatterns/${CONTAINER}:${TAG}
+upload: build ## Builds and then uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}
+	@echo "Uploading the container to quay.io/hybridcloudpatterns/${CONTAINER}"
+	buildah push localhost/${CONTAINER} quay.io/hybridcloudpatterns/${CONTAINER}
