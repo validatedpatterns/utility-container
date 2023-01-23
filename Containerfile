@@ -27,6 +27,7 @@ chmod +x /usr/local/bin/helm && rm -f /usr/local/bin/README.md && rm -f /usr/loc
 rm -f helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
 curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz && \
 tar xf tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
+rm -f tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz && \
 rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
 tar xvf openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
