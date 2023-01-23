@@ -33,7 +33,8 @@ curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT
 tar xvf openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
 curl -sLfO https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && tar xvf kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz -C /usr/local/bin && rm -f kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && chmod 755 /usr/local/bin/kustomize && \
-curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && chmod 755 /usr/local/bin/yq
+curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 && chmod 755 /usr/local/bin/yq && \
+rm -f /root/anaconda* /root/original-ks.cfg
 
 # humanize is only needed for the trimming of the container
 # See https://github.com/Azure/azure-sdk-for-python/issues/11149
