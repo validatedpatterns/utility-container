@@ -24,6 +24,7 @@ chmod +x /usr/local/bin/argocd && \
 curl -sLfO https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
 tar xf helm-v${HELM_VERSION}-linux-amd64.tar.gz --strip-component 1 -C /usr/local/bin && \
 chmod +x /usr/local/bin/helm && rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
+rm -f helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
 curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz && \
 tar xf tkn_${TKN_CLI_VERSION}_Linux_x86_64.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
 rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
