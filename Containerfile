@@ -48,10 +48,20 @@ rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_T
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python azure_sdk_trim.py && rm azure_sdk_trim.py && pip3 uninstall -y humanize
 
-RUN mkdir -m 770 -p /pattern && \
-mkdir -m 770 -p /pattern/.ansible && \
-chown -R 1001.1001 /pattern 
+#RUN mkdir -m 770 -p /pattern/.ansible/tmp && \
+#chown -R 1001:1001 /pattern  && mkdir -m 770 -p /pattern-home/.ansible/tmp && chown -R 1001:1001 /pattern-home
+RUN mkdir -m 770 -p /pattern/.ansible/tmp && mkdir -m 770 -p /pattern-home/.ansible/tmp
 
-USER 1001
+# We will have two important folders:
+# /pattern which will have the current pattern's git repo bindmounted
+# /pattern-home which stays inside the container only
+# This split allows us to point all the ansible variables for temporary folders to
+# stay inside /pattern-home in the container. This way we are not going to fight for permissions
+# (normally a container can have trouble to write back to the host)
+#USER 1001
+ENV HOME=/pattern-home
+ENV ANSIBLE_REMOTE_TMP=/pattern-home/.ansible/tmp
+ENV ANSIBLE_LOCAL_TMP=/pattern-home/.ansible/tmp
+ENV ANSIBLE_LOCALHOST_WARNING=False
 
 WORKDIR /pattern
