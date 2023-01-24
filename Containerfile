@@ -14,7 +14,7 @@ ARG YQ_VERSION="4.30.7"
 
 USER root
 
-RUN microdnf install -y python3-pip make git-core tar vi jq which && \
+RUN microdnf install -y python3-pip make git-core tar vi jq which findutils && \
 microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
