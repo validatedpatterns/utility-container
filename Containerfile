@@ -67,4 +67,6 @@ ENV ANSIBLE_REMOTE_TMP=/pattern-home/.ansible/tmp
 ENV ANSIBLE_LOCAL_TMP=/pattern-home/.ansible/tmp
 ENV ANSIBLE_LOCALHOST_WARNING=False
 
+COPY default-cmd.sh /usr/local/bin
 WORKDIR /pattern
+CMD /usr/local/bin/default-cmd.sh
