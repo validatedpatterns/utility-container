@@ -1,0 +1,16 @@
+name: "Container build and test"
+on: [push, pull_request]
+
+jobs:
+  podman-build:
+    name: Utility Container Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Utility Container Build
+        run: make build
+
+      - name: Run Container tests
+        run: make test
