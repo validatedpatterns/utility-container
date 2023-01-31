@@ -17,8 +17,8 @@ podman-build:
 
 .PHONY: versions
 versions: ## Prints the versions of most tools inside the container
-	@podman run --rm -it --net=host ${CONTAINER} sh -c \
-		"echo '* Helm: '; helm version; \
+	@podman run --rm -it --net=host ${CONTAINER} bash -c \
+		"set -e; echo '* Helm: '; helm version; \
 		echo '* ArgoCD: '; argocd version --client ; \
 		echo '* Tekton: '; tkn version ; \
 		echo '* oc: '; oc version ; \
@@ -35,6 +35,9 @@ run: ## Runs the container interactively
 		-v ${HOME}:/pattern \
 		-v ${HOME}:${HOME} \
 		-w $$(pwd) ${CONTAINER} sh
+
+.PHONY: test
+test: versions ## Tests the container for all the required bits
 
 .PHONY: upload
 upload: build ## Builds and then uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}
