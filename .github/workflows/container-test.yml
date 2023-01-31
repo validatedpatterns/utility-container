@@ -14,3 +14,10 @@ jobs:
 
       - name: Run Container tests
         run: make test
+
+      - name: Clone MCG and test a target via container
+        run: |
+          git clone --depth 1 https://github.com/hybrid-cloud-patterns/multicloud-gitops
+          cd multicloud-gitops
+          export PATTERN_UTILITY_CONTAINER=localhost/utility-container:latest
+          ./pattern.sh make validate-schema
