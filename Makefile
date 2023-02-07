@@ -26,7 +26,9 @@ versions: ## Prints the versions of most tools inside the container
 		echo '* yq: '; yq --version ; \
 		echo '* Python: '; python --version ; \
 		echo '* Ansible: '; ansible --version ; \
-		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core"
+		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
+		echo '* diff: '; diff --version ; \
+		echo '* find: '; find --version"
 
 .PHONY: run
 run: ## Runs the container interactively
