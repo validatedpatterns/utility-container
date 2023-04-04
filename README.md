@@ -38,6 +38,7 @@ Client Version: 4.10.3
 | ansible-collections |
 | ------------------- |
 | kubernetes.core |
+| redhat_cop.controller_configuration |
 
 ### Usage
 **Pull the image**
