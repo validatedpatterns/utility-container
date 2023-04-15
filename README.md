@@ -50,3 +50,10 @@ podman pull quay.io/hybridcloudpatterns/utility-container:stable-4.10.3
 ```bash
 podman run quay.io/hybridcloudpatterns:stable-4.10.3 ansible-playbook <playbook>.yml 
 ```
+
+### Build the image
+Just run: `make build` and both amd64 and arm64 will be built locally (you will need the qemu-user-static package installed)
+
+To upload the image to the official repo run: `make UPLOADREGISTRY=quay.io/hybridcloudpatterns upload` (by default it uploads somewhere else
+to try and avoid accidental uploads)
+
