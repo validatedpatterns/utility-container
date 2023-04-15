@@ -10,14 +10,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Utility Container Build
-        run: make build
+        run: make manifest podman-build-amd64
 
       - name: Run Container tests
-        run: make test
+        run: make test-amd64
 
       - name: Clone MCG and test a target via container
         run: |
           git clone --depth 1 https://github.com/hybrid-cloud-patterns/multicloud-gitops
           cd multicloud-gitops
-          export PATTERN_UTILITY_CONTAINER=localhost/utility-container:latest
+          export PATTERN_UTILITY_CONTAINER=localhost/utility-container:latest-amd64
           ./pattern.sh make validate-schema
