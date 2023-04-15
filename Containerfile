@@ -1,5 +1,24 @@
 FROM registry.access.redhat.com/ubi9/ubi-minimal
-LABEL maintainer Validated Patterns <team-validated-patterns@redhat.com>
+
+ARG TITLE="utility-container"
+ARG DESCRIPTION="Pattern Utility Container"
+ARG MAINTAINER="Validated Patterns <team-validated-patterns@redhat.com>"
+# https://spdx.org/licenses/
+ARG LICENSE="Apache-2.0"
+ARG URL="https://github.com/hybrid-cloud-patterns"
+ARG SOURCE="https://github.com/hybrid-cloud-patterns/utility-container/blob/main/Containerfile"
+
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
+LABEL org.opencontainers.image.title="${TITLE}" \
+      org.opencontainers.image.description="${DESCRIPTION}" \
+      org.opencontainers.image.url="${URL}" \
+      org.opencontainers.image.source="${SOURCE}" \
+      org.opencontainers.image.authors="${MAINTAINER}" \
+      org.opencontainers.image.licenses="${LICENSE}" \
+      name="${TITLE}" \
+      maintainer="${MAINTAINER}" \
+      license="${LICENSE}" \
+      description="${DESCRIPTION}"
 
 ARG COLLECTIONS_TO_REMOVE="fortinet cisco dellemc f5networks junipernetworks mellanox netapp"
 ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en langpacks-en"
