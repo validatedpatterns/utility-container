@@ -43,6 +43,6 @@ podman run -it --rm --net=host quay.io/hybridcloudpatterns/utility-container:lat
 ## Build the image
 Just run: `make build` and both amd64 and arm64 will be built locally (you will need the qemu-user-static package installed)
 
-To upload the image to the official repo run: `make UPLOADREGISTRY=quay.io/hybridcloudpatterns upload` (by default it uploads somewhere else
+To upload the image to the official repository, run: `make UPLOADREGISTRY=quay.io/hybridcloudpatterns upload` (by default it uploads somewhere else
 to try and avoid accidental uploads)
 
