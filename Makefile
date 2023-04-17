@@ -88,7 +88,7 @@ run: ## Runs the container interactively
 		--security-opt label=disable \
 		-v ${HOME}:/pattern \
 		-v ${HOME}:${HOME} \
-		-w $$(pwd) "${REGISTRY}/${CONTAINER}" sh
+		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh
 
 .PHONY: upload
 upload: ## Uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}
