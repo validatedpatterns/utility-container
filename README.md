@@ -39,12 +39,12 @@ Client Version: 4.10.3
 ### Usage
 **Pull the image**
 ```bash
-podman pull quay.io/hybridcloudpatterns/utility-container:stable-4.10.3
+podman pull quay.io/hybridcloudpatterns/utility-container:latest
 ```
 
 **Use image to execute a playbook**
 ```bash
-podman run quay.io/hybridcloudpatterns:stable-4.10.3 ansible-playbook <playbook>.yml 
+podman run -it --rm --net=host quay.io/hybridcloudpatterns/utility-container:latest ansible-playbook <playbook>.yml
 ```
 
 ### Build the image
