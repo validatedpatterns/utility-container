@@ -79,11 +79,7 @@ ansible-galaxy collection install --collections-path /usr/share/ansible/collecti
 rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python azure_sdk_trim.py && rm azure_sdk_trim.py && pip3 uninstall -y humanize && \
-if [[ -n $EXTRARPMS ]]; then microdnf remove -y $EXTRARPMS; fi
-
-#RUN mkdir -m 770 -p /pattern/.ansible/tmp && \
-#chown -R 1001:1001 /pattern  && mkdir -m 770 -p /pattern-home/.ansible/tmp && chown -R 1001:1001 /pattern-home
-RUN mkdir -m 770 -p /pattern/.ansible/tmp && mkdir -m 770 -p /pattern-home/.ansible/tmp
+if [[ -n $EXTRARPMS ]]; then microdnf remove -y $EXTRARPMS; fi && mkdir -m 770 -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp
 
 # We will have two important folders:
 # /pattern which will have the current pattern's git repo bindmounted
