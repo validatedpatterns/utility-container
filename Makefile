@@ -78,34 +78,27 @@ versions: ## Print all the versions of software in the locally-built container
 		-v ${HOME}:/pattern \
 		-v ${HOME}:${HOME} \
 		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh -c \
-		"set -e; echo -n \"python3-pip: \"; rpm -q --queryformat '%{VERSION}\n' python3-pip; \
-		echo -n \"git-core: \"; rpm -q --qf '%{VERSION}\n' git-core; \
-		echo -n \"vi: \"; rpm -q --qf '%{VERSION}\n' vim-minimal; \
-		echo -n \"tar: \"; rpm -q --qf '%{VERSION}\n' tar; \
-		echo -n \"make: \"; rpm -q --qf '%{VERSION}\n' make; \
-		echo -n \"jq: \"; rpm -q --qf '%{VERSION}\n' jq; \
-		echo -n \"argocd: \"; argocd version --client -o json | jq -r '.client.Version'; \
-		echo -n \"helm: \"; helm version --short; \
-		echo -n \"tekton: \"; tkn version --component client; \
-		echo -n \"openshift: \"; oc version --client -o json | jq -r '.releaseClientVersion'; \
-		echo -n \"kustomize: \"; oc version --client -o json | jq -r '.kustomizeVersion'; \
-		echo -n \"ansible: \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d ']'; \
-		echo -n \"kubernetes: \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"boto3: \"; pip show boto3 | grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"botocore: \"; pip show botocore | grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"awscli: \"; pip show awscli | grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"azure-cli: \"; pip show azure-cli | grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"gcloud: \"; pip show gcloud| grep ^Version: | cut -f2 -d\ ; \
-		"
-
-	@podman run --rm -it --net=host \
-		--security-opt label=disable \
-		-v ${HOME}:/pattern \
-		-v ${HOME}:${HOME} \
-		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh -c \
-		"set -e; echo -n \"kubenetes.core: \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\ ; \
-		echo -n \"redhat_cop.controller_configuration: \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ ; \
-    "
+		"set -e; echo -n \"python3-pip package \"; rpm -q --queryformat '%{VERSION}\n' python3-pip; \
+		echo -n \"git-core package \"; rpm -q --qf '%{VERSION}\n' git-core; \
+		echo -n \"vi package \"; rpm -q --qf '%{VERSION}\n' vim-minimal; \
+		echo -n \"tar package \"; rpm -q --qf '%{VERSION}\n' tar; \
+		echo -n \"make package \"; rpm -q --qf '%{VERSION}\n' make; \
+		echo -n \"jq package \"; rpm -q --qf '%{VERSION}\n' jq; \
+		echo -n \"argocd binary \"; argocd version --client -o json | jq -r '.client.Version'; \
+		echo -n \"helm binary \"; helm version --short; \
+		echo -n \"tekton binary \"; tkn version --component client; \
+		echo -n \"openshift binary \"; oc version --client -o json | jq -r '.releaseClientVersion'; \
+		echo -n \"kustomize binary \"; oc version --client -o json | jq -r '.kustomizeVersion'; \
+		echo -n \"ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d ']'; \
+		echo -n \"kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ ; \
+		echo -n \"boto3 pip \"; pip show boto3 | grep ^Version: | cut -f2 -d\ ; \
+		echo -n \"botocore pip \"; pip show botocore | grep ^Version: | cut -f2 -d\ ; \
+		echo -n \"awscli pip \"; pip show awscli | grep ^Version: | cut -f2 -d\ ; \
+		echo -n \"azure-cli pip \"; pip show azure-cli | grep ^Version: | cut -f2 -d\ ; \
+		echo -n \"gcloud pip \"; pip show gcloud| grep ^Version: | cut -f2 -d\ ; \
+		echo -n \"kubernetes.core collection \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\ ; \
+		echo -n \"redhat_cop.controller_configuration collection \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ ; \
+    " | sort | column --table -o '|'
 
 .PHONY: run
 run: ## Runs the container interactively
