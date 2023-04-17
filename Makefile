@@ -110,6 +110,15 @@ run: ## Runs the container interactively
 		-v ${HOME}:${HOME} \
 		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh
 
+.PHONY: super-linter
+super-linter: ## Runs super linter locally
+	rm -rf .mypy_cache
+	podman run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true	\
+					$(DISABLE_LINTERS) \
+					-v $(PWD):/tmp/lint:rw,z \
+					-w /tmp/lint \
+					docker.io/github/super-linter:slim-v4
+
 .PHONY: upload
 upload: ## Uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}
 	@echo "Uploading the ${REGISTRY}/${CONTAINER} container to ${UPLOADREGISTRY}/${CONTAINER}"
