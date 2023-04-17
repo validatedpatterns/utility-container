@@ -77,7 +77,7 @@ ansible-galaxy collection install --collections-path /usr/share/ansible/collecti
 rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python azure_sdk_trim.py && rm azure_sdk_trim.py && pip3 uninstall -y humanize && \
-if [[ -n $EXTRARPMS ]]; then microdnf remove -y $EXTRARPMS; fi && \
+if [ -n "$EXTRARPMS" ]; then microdnf remove -y $EXTRARPMS; fi && \
 mkdir -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp && \
 find /pattern/.ansible -type d -exec chmod 770 "{}" \; && \
 find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
