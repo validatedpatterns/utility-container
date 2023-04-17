@@ -93,4 +93,4 @@ ENV ANSIBLE_LOCALHOST_WARNING=False
 
 COPY default-cmd.sh /usr/local/bin
 WORKDIR /pattern
-CMD /usr/local/bin/default-cmd.sh
+CMD ["/usr/local/bin/default-cmd.sh"]
