@@ -4,6 +4,18 @@ CONTAINER ?= $(NAME):$(TAG)
 
 REGISTRY ?= localhost
 UPLOADREGISTRY ?= quay.io/rhn_support_mbaldess
+TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
+		echo '* ArgoCD: '; argocd version --client ; \
+		echo '* Tekton: '; tkn version ; \
+		echo '* oc: '; oc version ; \
+		echo '* kustomize: '; kustomize version ; \
+		echo '* yq: '; yq --version ; \
+		echo '* Python: '; python --version ; \
+		echo '* Ansible: '; ansible --version ; \
+		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
+		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
+		echo '* diff: '; diff --version ; \
+		echo '* find: '; find --version"
 
 ##@ Help-related tasks
 .PHONY: help
@@ -47,35 +59,13 @@ podman-build-arm64: ## build the container in arm64
 test-amd64: ## Prints the test of most tools inside the container amd64
 	@echo "** Testing linux/amd64"
 	@podman run --arch=amd64 --rm -it --net=host "${REGISTRY}/${CONTAINER}-amd64" bash -c \
-		"set -e; echo '* Helm: '; helm version; \
-		echo '* ArgoCD: '; argocd version --client ; \
-		echo '* Tekton: '; tkn version ; \
-		echo '* oc: '; oc version ; \
-		echo '* kustomize: '; kustomize version ; \
-		echo '* yq: '; yq --version ; \
-		echo '* Python: '; python --version ; \
-		echo '* Ansible: '; ansible --version ; \
-		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
-		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
-		echo '* diff: '; diff --version ; \
-		echo '* find: '; find --version"
+		$(TESTCOMMAND)
 
 .PHONY: test-arm64
 test-arm64: ## Prints the test of most tools inside the container arm64
 	@echo "** Testing linux/arm64"
 	@podman run --arch=arm64 --rm -it --net=host "${REGISTRY}/${CONTAINER}-arm64" bash -c \
-		"set -e; echo '* Helm: '; helm version; \
-		echo '* ArgoCD: '; argocd version --client ; \
-		echo '* Tekton: '; tkn version ; \
-		echo '* oc: '; oc version ; \
-		echo '* kustomize: '; kustomize version ; \
-		echo '* yq: '; yq --version ; \
-		echo '* Python: '; python --version ; \
-		echo '* Ansible: '; ansible --version ; \
-		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
-		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
-		echo '* diff: '; diff --version ; \
-		echo '* find: '; find --version"
+		$(TESTCOMMAND)
 
 .PHONY: test
 test: test-amd64 test-arm64 ## Tests the container for all the required bits both arm64 and amd64
