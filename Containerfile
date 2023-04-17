@@ -28,7 +28,6 @@ ARG OPENSHIFT_CLIENT_VERSION="4.11.25"
 ARG HELM_VERSION="3.10.3"
 ARG ARGOCD_VERSION="2.5.7"
 ARG TKN_CLI_VERSION="0.29.0"
-ARG KUSTOMIZE_VERSION="4.5.6"
 ARG YQ_VERSION="4.30.7"
 
 # amd64 - arm64
@@ -60,7 +59,6 @@ rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
 tar xvf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
-curl -sLfO https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz && tar xvf kustomize_v${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz -C /usr/local/bin && rm -f kustomize_v${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz && chmod 755 /usr/local/bin/kustomize && \
 curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} && chmod 755 /usr/local/bin/yq && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
