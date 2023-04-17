@@ -8,7 +8,6 @@ TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* ArgoCD: '; argocd version --client ; \
 		echo '* Tekton: '; tkn version ; \
 		echo '* oc: '; oc version ; \
-		echo '* kustomize: '; kustomize version ; \
 		echo '* yq: '; yq --version ; \
 		echo '* Python: '; python --version ; \
 		echo '* Ansible: '; ansible --version ; \
