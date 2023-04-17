@@ -1,16 +1,9 @@
-# Validated Pattern Utility Container 
+# Validated Pattern Utility Container
 
 utility container for simplified execution of imperative commands in each of the patterns.
 
-The tag used on the image represents the `oc` client version installed. <br/>
-For example: `quay.io/hybridcloudpatterns/utility-container:stable-4.10.3` means that the openshift client (oc) version is `4.10.3`
 
-```bash
-$ podman run quay.io/hybridcloudpatterns/utility-container:stable-4.10.3` oc version 
-Client Version: 4.10.3
-```
-
-### Installed Software
+## Installed Software
 
 |               name                |  type    |   version    |
 |:---------------------------------:|:--------:|:------------:|
@@ -36,7 +29,7 @@ Client Version: 4.10.3
 |tekton                             |binary    |0.29.0        |
 |vi                                 |package   |8.2.2637      |
 
-### Usage
+## Usage
 **Pull the image**
 ```bash
 podman pull quay.io/hybridcloudpatterns/utility-container:latest
@@ -47,7 +40,7 @@ podman pull quay.io/hybridcloudpatterns/utility-container:latest
 podman run -it --rm --net=host quay.io/hybridcloudpatterns/utility-container:latest ansible-playbook <playbook>.yml
 ```
 
-### Build the image
+## Build the image
 Just run: `make build` and both amd64 and arm64 will be built locally (you will need the qemu-user-static package installed)
 
 To upload the image to the official repo run: `make UPLOADREGISTRY=quay.io/hybridcloudpatterns upload` (by default it uploads somewhere else
