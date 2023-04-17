@@ -12,33 +12,29 @@ Client Version: 4.10.3
 
 ### Installed Software
 
-|    name     |  type   |
-|:-----------:|:-------:|
-| python3-pip | package |
-|  git-core   | package |
-|     vi      | package |
-|     tar     | package |
-|    make     | package |
-|     jq      | package |
-|   argocd    | binary  |
-|    helm     | binary  |
-|   tekton    | binary  |
-|  openshift  | binary  |
-|  kustomize  | binary  |
-|   ansible   |   pip   |
-| kubernetes  |   pip   |
-|    boto3    |   pip   |
-|  botocore   |   pip   |
-|   awscli    |   pip   |
-|  azure-cli  |   pip   |
-|   gcloud    |   pip   |
-
-
-### The ansible-galaxy collection installed:
-| ansible-collections |
-| ------------------- |
-| kubernetes.core |
-| redhat_cop.controller_configuration |
+|               name                |  type    |   version    |
+|:---------------------------------:|:--------:|:------------:|
+|ansible                            |pip       |2.14.4        |
+|argocd                             |binary    |v2.5.7+e0ee345|
+|awscli                             |pip       |1.27.114      |
+|azure-cli                          |pip       |2.47.0        |
+|boto3                              |pip       |1.26.114      |
+|botocore                           |pip       |1.29.114      |
+|gcloud                             |pip       |0.18.3        |
+|git-core                           |package   |2.31.1        |
+|helm                               |binary    |v3.10.3       |
+|jq                                 |package   |1.6           |
+|kubernetes.core                    |collection|2.4.0         |
+|kubernetes                         |pip       |26.1.0        |
+|kustomize                          |binary    |v4.5.4        |
+|make                               |package   |4.3           |
+|openshift                          |binary    |4.11.25       |
+|python3-pip                        |package   |21.2.3        |
+|python                             |package   |3.9.14        |
+|redhat_cop.controller_configuration|collection|2.3.1         |
+|tar                                |package   |1.34          |
+|tekton                             |binary    |0.29.0        |
+|vi                                 |package   |8.2.2637      |
 
 ### Usage
 **Pull the image**

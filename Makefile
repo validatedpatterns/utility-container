@@ -78,26 +78,28 @@ versions: ## Print all the versions of software in the locally-built container
 		-v ${HOME}:/pattern \
 		-v ${HOME}:${HOME} \
 		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh -c \
-		"set -e; echo -n \"python3-pip package \"; rpm -q --queryformat '%{VERSION}\n' python3-pip; \
-		echo -n \"git-core package \"; rpm -q --qf '%{VERSION}\n' git-core; \
-		echo -n \"vi package \"; rpm -q --qf '%{VERSION}\n' vim-minimal; \
-		echo -n \"tar package \"; rpm -q --qf '%{VERSION}\n' tar; \
-		echo -n \"make package \"; rpm -q --qf '%{VERSION}\n' make; \
-		echo -n \"jq package \"; rpm -q --qf '%{VERSION}\n' jq; \
-		echo -n \"argocd binary \"; argocd version --client -o json | jq -r '.client.Version'; \
-		echo -n \"helm binary \"; helm version --short; \
-		echo -n \"tekton binary \"; tkn version --component client; \
-		echo -n \"openshift binary \"; oc version --client -o json | jq -r '.releaseClientVersion'; \
-		echo -n \"kustomize binary \"; oc version --client -o json | jq -r '.kustomizeVersion'; \
-		echo -n \"ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d ']'; \
-		echo -n \"kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"boto3 pip \"; pip show boto3 | grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"botocore pip \"; pip show botocore | grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"awscli pip \"; pip show awscli | grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"azure-cli pip \"; pip show azure-cli | grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"gcloud pip \"; pip show gcloud| grep ^Version: | cut -f2 -d\ ; \
-		echo -n \"kubernetes.core collection \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\ ; \
-		echo -n \"redhat_cop.controller_configuration collection \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ ; \
+		"set -e; \
+		echo -n \"|python3-pip package \"; rpm -q --queryformat '%{VERSION}' python3-pip; echo \" \"; \
+		echo -n \"|git-core package \"; rpm -q --qf '%{VERSION}' git-core; echo \" \"; \
+		echo -n \"|vi package \"; rpm -q --qf '%{VERSION}' vim-minimal; echo \" \";  \
+		echo -n \"|tar package \"; rpm -q --qf '%{VERSION}' tar;  echo \" \"; \
+		echo -n \"|make package \"; rpm -q --qf '%{VERSION}' make;  echo \" \"; \
+		echo -n \"|python package \"; rpm -q --qf '%{VERSION}' python3;  echo \" \"; \
+		echo -n \"|jq package \"; rpm -q --qf '%{VERSION}' jq;  echo \" \"; \
+		echo -n \"|argocd binary \"; argocd version --client -o json | jq -j '.client.Version';  echo \" \"; \
+		echo -n \"|helm binary \"; helm version --template '{{ .Version }}';  echo \" \"; \
+		echo -n \"|tekton binary \"; tkn version --component client | tr -d '\n';  echo \" \"; \
+		echo -n \"|openshift binary \"; oc version --client -o json | jq -j '.releaseClientVersion';  echo \" \"; \
+		echo -n \"|kustomize binary \"; oc version --client -o json | jq -j '.kustomizeVersion';  echo \" \"; \
+		echo -n \"|ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d '\n]';  echo \" \"; \
+		echo -n \"|kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
+		echo -n \"|boto3 pip \"; pip show boto3 | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|botocore pip \"; pip show botocore | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|awscli pip \"; pip show awscli | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|azure-cli pip \"; pip show azure-cli | grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
+		echo -n \"|gcloud pip \"; pip show gcloud| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|kubernetes.core collection \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
+		echo -n \"|redhat_cop.controller_configuration collection \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
     " | sort | column --table -o '|'
 
 .PHONY: run
