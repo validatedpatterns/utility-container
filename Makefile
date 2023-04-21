@@ -116,7 +116,7 @@ super-linter: ## Runs super linter locally
 					$(DISABLE_LINTERS) \
 					-v $(PWD):/tmp/lint:rw,z \
 					-w /tmp/lint \
-					docker.io/github/super-linter:slim-v4
+					docker.io/github/super-linter:slim-v5
 
 .PHONY: upload
 upload: ## Uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}
