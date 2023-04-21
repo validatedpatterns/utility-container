@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 ARG TITLE="utility-container"
 ARG DESCRIPTION="Pattern Utility Container"
@@ -28,7 +28,6 @@ ARG OPENSHIFT_CLIENT_VERSION="4.11.25"
 ARG HELM_VERSION="3.10.3"
 ARG ARGOCD_VERSION="2.5.7"
 ARG TKN_CLI_VERSION="0.29.0"
-ARG KUSTOMIZE_VERSION="4.5.6"
 ARG YQ_VERSION="4.30.7"
 
 # amd64 - arm64
@@ -60,7 +59,6 @@ rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
 tar xvf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
-curl -sLfO https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz && tar xvf kustomize_v${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz -C /usr/local/bin && rm -f kustomize_v${KUSTOMIZE_VERSION}_linux_${TARGETARCH}.tar.gz && chmod 755 /usr/local/bin/kustomize && \
 curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} && chmod 755 /usr/local/bin/yq && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
@@ -79,11 +77,10 @@ ansible-galaxy collection install --collections-path /usr/share/ansible/collecti
 rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python azure_sdk_trim.py && rm azure_sdk_trim.py && pip3 uninstall -y humanize && \
-if [[ -n $EXTRARPMS ]]; then microdnf remove -y $EXTRARPMS; fi
-
-#RUN mkdir -m 770 -p /pattern/.ansible/tmp && \
-#chown -R 1001:1001 /pattern  && mkdir -m 770 -p /pattern-home/.ansible/tmp && chown -R 1001:1001 /pattern-home
-RUN mkdir -m 770 -p /pattern/.ansible/tmp && mkdir -m 770 -p /pattern-home/.ansible/tmp
+if [ -n "$EXTRARPMS" ]; then microdnf remove -y $EXTRARPMS; fi && \
+mkdir -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp && \
+find /pattern/.ansible -type d -exec chmod 770 "{}" \; && \
+find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
 
 # We will have two important folders:
 # /pattern which will have the current pattern's git repo bindmounted
@@ -99,4 +96,4 @@ ENV ANSIBLE_LOCALHOST_WARNING=False
 
 COPY default-cmd.sh /usr/local/bin
 WORKDIR /pattern
-CMD /usr/local/bin/default-cmd.sh
+CMD ["/usr/local/bin/default-cmd.sh"]

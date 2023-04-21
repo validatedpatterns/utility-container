@@ -4,6 +4,17 @@ CONTAINER ?= $(NAME):$(TAG)
 
 REGISTRY ?= localhost
 UPLOADREGISTRY ?= quay.io/rhn_support_mbaldess
+TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
+		echo '* ArgoCD: '; argocd version --client ; \
+		echo '* Tekton: '; tkn version ; \
+		echo '* oc: '; oc version ; \
+		echo '* yq: '; yq --version ; \
+		echo '* Python: '; python --version ; \
+		echo '* Ansible: '; ansible --version ; \
+		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
+		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
+		echo '* diff: '; diff --version ; \
+		echo '* find: '; find --version"
 
 ##@ Help-related tasks
 .PHONY: help
@@ -47,40 +58,48 @@ podman-build-arm64: ## build the container in arm64
 test-amd64: ## Prints the test of most tools inside the container amd64
 	@echo "** Testing linux/amd64"
 	@podman run --arch=amd64 --rm -it --net=host "${REGISTRY}/${CONTAINER}-amd64" bash -c \
-		"set -e; echo '* Helm: '; helm version; \
-		echo '* ArgoCD: '; argocd version --client ; \
-		echo '* Tekton: '; tkn version ; \
-		echo '* oc: '; oc version ; \
-		echo '* kustomize: '; kustomize version ; \
-		echo '* yq: '; yq --version ; \
-		echo '* Python: '; python --version ; \
-		echo '* Ansible: '; ansible --version ; \
-		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
-		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
-		echo '* diff: '; diff --version ; \
-		echo '* find: '; find --version"
+		$(TESTCOMMAND)
 
 .PHONY: test-arm64
 test-arm64: ## Prints the test of most tools inside the container arm64
 	@echo "** Testing linux/arm64"
 	@podman run --arch=arm64 --rm -it --net=host "${REGISTRY}/${CONTAINER}-arm64" bash -c \
-		"set -e; echo '* Helm: '; helm version; \
-		echo '* ArgoCD: '; argocd version --client ; \
-		echo '* Tekton: '; tkn version ; \
-		echo '* oc: '; oc version ; \
-		echo '* kustomize: '; kustomize version ; \
-		echo '* yq: '; yq --version ; \
-		echo '* Python: '; python --version ; \
-		echo '* Ansible: '; ansible --version ; \
-		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
-		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
-		echo '* diff: '; diff --version ; \
-		echo '* find: '; find --version"
+		$(TESTCOMMAND)
 
 .PHONY: test
 test: test-amd64 test-arm64 ## Tests the container for all the required bits both arm64 and amd64
 
 ##@ Run and upload tasks
+.PHONY: versions
+versions: ## Print all the versions of software in the locally-built container
+	@podman run --rm -it --net=host \
+		--security-opt label=disable \
+		-v ${HOME}:/pattern \
+		-v ${HOME}:${HOME} \
+		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh -c \
+		"set -e; \
+		echo -n \"|python3-pip package \"; rpm -q --queryformat '%{VERSION}' python3-pip; echo \" \"; \
+		echo -n \"|git-core package \"; rpm -q --qf '%{VERSION}' git-core; echo \" \"; \
+		echo -n \"|vi package \"; rpm -q --qf '%{VERSION}' vim-minimal; echo \" \";  \
+		echo -n \"|tar package \"; rpm -q --qf '%{VERSION}' tar;  echo \" \"; \
+		echo -n \"|make package \"; rpm -q --qf '%{VERSION}' make;  echo \" \"; \
+		echo -n \"|python package \"; rpm -q --qf '%{VERSION}' python3;  echo \" \"; \
+		echo -n \"|jq package \"; rpm -q --qf '%{VERSION}' jq;  echo \" \"; \
+		echo -n \"|argocd binary \"; argocd version --client -o json | jq -j '.client.Version';  echo \" \"; \
+		echo -n \"|helm binary \"; helm version --template '{{ .Version }}';  echo \" \"; \
+		echo -n \"|tekton binary \"; tkn version --component client | tr -d '\n';  echo \" \"; \
+		echo -n \"|openshift binary \"; oc version --client -o json | jq -j '.releaseClientVersion';  echo \" \"; \
+		echo -n \"|kustomize binary \"; oc version --client -o json | jq -j '.kustomizeVersion';  echo \" \"; \
+		echo -n \"|ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d '\n]';  echo \" \"; \
+		echo -n \"|kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
+		echo -n \"|boto3 pip \"; pip show boto3 | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|botocore pip \"; pip show botocore | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|awscli pip \"; pip show awscli | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|azure-cli pip \"; pip show azure-cli | grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
+		echo -n \"|gcloud pip \"; pip show gcloud| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|kubernetes.core collection \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
+		echo -n \"|redhat_cop.controller_configuration collection \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
+    " | sort | column --table -o '|'
 
 .PHONY: run
 run: ## Runs the container interactively
@@ -88,7 +107,16 @@ run: ## Runs the container interactively
 		--security-opt label=disable \
 		-v ${HOME}:/pattern \
 		-v ${HOME}:${HOME} \
-		-w $$(pwd) "${REGISTRY}/${CONTAINER}" sh
+		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh
+
+.PHONY: super-linter
+super-linter: ## Runs super linter locally
+	rm -rf .mypy_cache
+	podman run -e RUN_LOCAL=true -e USE_FIND_ALGORITHM=true	\
+					$(DISABLE_LINTERS) \
+					-v $(PWD):/tmp/lint:rw,z \
+					-w /tmp/lint \
+					docker.io/github/super-linter:slim-v4
 
 .PHONY: upload
 upload: ## Uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}
