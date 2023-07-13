@@ -41,7 +41,7 @@ ARG EXTRARPMS
 
 USER root
 
-RUN microdnf --disableplugin=subscription-manager install -y python3-pip make git-core tar vi jq which findutils diffutils $EXTRARPMS && \
+RUN microdnf --disableplugin=subscription-manager install -y python3-pip make git-core tar vi jq which findutils diffutils sshpass $EXTRARPMS && \
 microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \

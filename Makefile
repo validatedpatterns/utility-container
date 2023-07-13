@@ -78,6 +78,7 @@ versions: ## Print all the versions of software in the locally-built container
 		-v ${HOME}:${HOME} \
 		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh -c \
 		"set -e; \
+		echo -n \"|sshpass package \"; rpm -q --queryformat '%{VERSION}' sshpass; echo \" \"; \
 		echo -n \"|python3-pip package \"; rpm -q --queryformat '%{VERSION}' python3-pip; echo \" \"; \
 		echo -n \"|git-core package \"; rpm -q --qf '%{VERSION}' git-core; echo \" \"; \
 		echo -n \"|vi package \"; rpm -q --qf '%{VERSION}' vim-minimal; echo \" \";  \
