@@ -65,6 +65,10 @@ rm -rf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz
 curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} && chmod 755 /usr/local/bin/yq && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
+# The hypershift cli is downloaded directly from the cluster.
+# This could change when HCP goes GA - the alternative would
+# be to compile our own, so this seemed the logical choice. 
+
 # humanize is only needed for the trimming of the container
 # See https://github.com/Azure/azure-sdk-for-python/issues/11149
 # and https://github.com/Azure/azure-sdk-for-python/issues/17801
