@@ -56,11 +56,18 @@ curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}
 tar xf tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
 rm -f tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
 rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
+curl -skLfO https://hypershift-cli-download-multicluster-engine.apps.hcpvp.blueprints.rhecoeng.com/linux/amd64/hypershift.tar.gz && \
+tar xf hypershift.tar.gz -C /usr/local/bin/ && \
+rm -f hypershift.tar.gz && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
 tar xvf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
 curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} && chmod 755 /usr/local/bin/yq && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
+
+# The hypershift cli is downloaded directly from the cluster.
+# This could change when HCP goes GA - the alternative would
+# be to compile our own, so this seemed the logical choice. 
 
 # humanize is only needed for the trimming of the container
 # See https://github.com/Azure/azure-sdk-for-python/issues/11149
