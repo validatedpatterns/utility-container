@@ -24,11 +24,11 @@ ARG COLLECTIONS_TO_REMOVE="fortinet cisco dellemc f5networks junipernetworks mel
 ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en langpacks-en"
 ARG RPM_TO_FORCEFULLY_REMOVE="cracklib-dicts"
 # Versions
-ARG OPENSHIFT_CLIENT_VERSION="4.11.25"
-ARG HELM_VERSION="3.10.3"
-ARG ARGOCD_VERSION="2.5.7"
-ARG TKN_CLI_VERSION="0.29.0"
-ARG YQ_VERSION="4.30.7"
+ARG OPENSHIFT_CLIENT_VERSION="4.13.9"
+ARG HELM_VERSION="3.12.3"
+ARG ARGOCD_VERSION="2.8.0"
+ARG TKN_CLI_VERSION="0.31.2"
+ARG YQ_VERSION="4.35.1"
 
 # amd64 - arm64
 ARG TARGETARCH
