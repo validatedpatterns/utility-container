@@ -9,10 +9,10 @@ utility container for simplified execution of imperative commands in each of the
 |:---------------------------------:|:--------:|:------------:|
 |ansible                            |pip       |2.15.3        |
 |argocd                             |binary    |v2.8.0+804d4b8|
-|awscli                             |pip       |1.29.28       |
+|awscli                             |pip       |1.29.40       |
 |azure-cli                          |pip       |2.51.0        |
-|boto3                              |pip       |1.28.28       |
-|botocore                           |pip       |1.31.28       |
+|boto3                              |pip       |1.28.40       |
+|botocore                           |pip       |1.31.40       |
 |gcloud                             |pip       |0.18.3        |
 |git-core                           |package   |2.39.3        |
 |helm                               |binary    |v3.12.3       |
