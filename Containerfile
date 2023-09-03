@@ -7,6 +7,7 @@ ARG MAINTAINER="Validated Patterns <team-validated-patterns@redhat.com>"
 ARG LICENSE="Apache-2.0"
 ARG URL="https://github.com/hybrid-cloud-patterns"
 ARG SOURCE="https://github.com/hybrid-cloud-patterns/utility-container/blob/main/Containerfile"
+ARG HYPERSHIFT_URL="https://hypershift-cli-download-multicluster-engine.apps.hcp.blueprints.rhecoeng.com/linux/amd64/hypershift.tar.gz"
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
 LABEL org.opencontainers.image.title="${TITLE}" \
@@ -56,7 +57,7 @@ curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}
 tar xf tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
 rm -f tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
 rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
-curl -skLfO https://hypershift-cli-download-multicluster-engine.apps.hcpvp.blueprints.rhecoeng.com/linux/amd64/hypershift.tar.gz && \
+curl -skLfO ${HYPERSHIFT_URL} && \
 tar xf hypershift.tar.gz -C /usr/local/bin/ && \
 rm -f hypershift.tar.gz && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
