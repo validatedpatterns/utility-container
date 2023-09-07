@@ -7,7 +7,7 @@ ARG MAINTAINER="Validated Patterns <team-validated-patterns@redhat.com>"
 ARG LICENSE="Apache-2.0"
 ARG URL="https://github.com/hybrid-cloud-patterns"
 ARG SOURCE="https://github.com/hybrid-cloud-patterns/utility-container/blob/main/Containerfile"
-ARG HYPERSHIFT_URL="https://hypershift-cli-download-multicluster-engine.apps.hcp.blueprints.rhecoeng.com/linux/amd64/hypershift.tar.gz"
+ARG HYPERSHIFT_URL="https://hypershift-cli-download-multicluster-engine.apps.hcp.aws.validatedpatterns.io/linux/amd64/hypershift.tar.gz"
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
 LABEL org.opencontainers.image.title="${TITLE}" \
