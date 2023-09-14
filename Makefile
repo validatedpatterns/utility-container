@@ -131,7 +131,7 @@ clean: ## Removes any previously built artifact
 
 ##### HostedCluster Management tasks
 .PHONY: cluster-status
-cluster-status: ## Checks the status of hostedcluster machines
+cluster-status: ## Checks the status of hosted-cluster machines
 	@echo "Getting status of hosted-cluster nodes"
 	podman run --rm --net=host  \
 	  --security-opt label=disable \
@@ -142,7 +142,7 @@ cluster-status: ## Checks the status of hostedcluster machines
 
 
 .PHONY: cluster-start
-cluster-start: ## Starts the ostedcluster machines
+cluster-start: ## Starts the hosted-cluster machines
 	@echo "Starting hosted-cluster nodes"
 	podman run --rm --net=host  \
 	  --security-opt label=disable \
@@ -152,7 +152,7 @@ cluster-start: ## Starts the ostedcluster machines
 	  "${REGISTRY}/${CONTAINER}" python3 /usr/local/bin/start-instances.py -f ${CLUSTER}
 
 .PHONY: cluster-stop
-cluster-stop: ## Checks the status of hostedcluster machines
+cluster-stop: ## Stops the hosted-cluster machines
 	@echo "Stopping hosted-cluster nodes"
 	podman run --rm --net=host  \
 	  --security-opt label=disable \
