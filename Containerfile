@@ -102,6 +102,11 @@ ENV ANSIBLE_REMOTE_TMP=/pattern-home/.ansible/tmp
 ENV ANSIBLE_LOCAL_TMP=/pattern-home/.ansible/tmp
 ENV ANSIBLE_LOCALHOST_WARNING=False
 
+# Adding python scripts to start, stop and retrieve status of hostedcluster instnances
+ADD https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/start-instances.py \
+    https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/stop-instances.py \
+    https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/status-instances.py /usr/local/bin
+
 COPY default-cmd.sh /usr/local/bin
 WORKDIR /pattern
 CMD ["/usr/local/bin/default-cmd.sh"]

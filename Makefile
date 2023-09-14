@@ -128,3 +128,36 @@ upload: ## Uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}
 .PHONY: clean
 clean: ## Removes any previously built artifact
 	buildah manifest rm "${REGISTRY}/${CONTAINER}"
+
+##### HostedCluster Management tasks
+.PHONY: cluster-status
+cluster-status: ## Checks the status of hostedcluster machines
+	@echo "Getting status of hosted-cluster nodes"
+	podman run --rm --net=host  \
+	  --security-opt label=disable \
+		-v ${HOME}:/pattern \
+		-v ${HOME}:${HOME} \
+		-v ${HOME}/.aws:/pattern-home/.aws \
+		"${REGISTRY}/${CONTAINER}"  python3 /usr/local/bin/status-instances.py -f ${CLUSTER}
+
+
+.PHONY: cluster-start
+cluster-start: ## Starts the ostedcluster machines
+	@echo "Starting hosted-cluster nodes"
+	podman run --rm --net=host  \
+	  --security-opt label=disable \
+		-v ${HOME}:/pattern \
+		-v ${HOME}:${HOME} \
+		-v ${HOME}/.aws:/pattern-home/.aws \
+	  "${REGISTRY}/${CONTAINER}" python3 /usr/local/bin/start-instances.py -f ${CLUSTER}
+
+.PHONY: cluster-stop
+cluster-stop: ## Checks the status of hostedcluster machines
+	@echo "Stopping hosted-cluster nodes"
+	podman run --rm --net=host  \
+	  --security-opt label=disable \
+		-v ${HOME}:/pattern \
+		-v ${HOME}:${HOME} \
+		-v ${HOME}/.aws:/pattern-home/.aws \
+		"${REGISTRY}/${CONTAINER}" python3 /usr/local/bin/stop-instances.py -f ${CLUSTER}
+
