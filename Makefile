@@ -80,6 +80,7 @@ versions: ## Print all the versions of software in the locally-built container
 		"set -e; \
 		echo -n \"|sshpass package \"; rpm -q --queryformat '%{VERSION}' sshpass; echo \" \"; \
 		echo -n \"|python3-pip package \"; rpm -q --queryformat '%{VERSION}' python3-pip; echo \" \"; \
+		echo -n \"|python3-pytest package \"; rpm -q --queryformat '%{VERSION}' python3-pytest; echo \" \"; \
 		echo -n \"|git-core package \"; rpm -q --qf '%{VERSION}' git-core; echo \" \"; \
 		echo -n \"|vi package \"; rpm -q --qf '%{VERSION}' vim-minimal; echo \" \";  \
 		echo -n \"|tar package \"; rpm -q --qf '%{VERSION}' tar;  echo \" \"; \
@@ -91,7 +92,7 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|tekton binary \"; tkn version --component client | tr -d '\n';  echo \" \"; \
 		echo -n \"|openshift binary \"; oc version --client -o json | jq -j '.releaseClientVersion';  echo \" \"; \
 		echo -n \"|kustomize binary \"; oc version --client -o json | jq -j '.kustomizeVersion';  echo \" \"; \
-		echo -n \"|hypershift binary \"; hypershift version --commit-only | cut -c1-12 | tr -d '\n';  echo \" \"; \
+		echo -n \"|hcp binary \"; hcp --version version | cut -d: -f3 | tr -d '\n';  echo \" \"; \
 		echo -n \"|ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d '\n]';  echo \" \"; \
 		echo -n \"|kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
 		echo -n \"|boto3 pip \"; pip show boto3 | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
