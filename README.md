@@ -24,6 +24,7 @@ utility container for simplified execution of imperative commands in each of the
 |make                               |package   |4.3           |
 |openshift                          |binary    |4.13.9        |
 |python3-pip                        |package   |21.2.3        |
+|python3-pytest                     |package   |6.2.2-6       |
 |python                             |package   |3.9.16        |
 |redhat_cop.controller_configuration|collection|2.3.1         |
 |sshpass                            |package   |1.09          |
