@@ -22,7 +22,7 @@ utility container for simplified execution of imperative commands in each of the
 |kubernetes                         |pip       |27.2.0        |
 |kustomize                          |binary    |v4.5.7        |
 |make                               |package   |4.3           |
-|openshift                          |binary    |4.13.9        |
+|openshift                          |binary    |4.13.27       |
 |python3-pip                        |package   |21.2.3        |
 |python3-pytest                     |package   |6.2.2-6       |
 |python                             |package   |3.9.16        |
