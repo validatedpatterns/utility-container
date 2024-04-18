@@ -7,7 +7,7 @@ ARG MAINTAINER="Validated Patterns <team-validated-patterns@redhat.com>"
 ARG LICENSE="Apache-2.0"
 ARG URL="https://github.com/validatedpatterns"
 ARG SOURCE="https://github.com/validatedpatterns/utility-container/blob/main/Containerfile"
-ARG HYPERSHIFT_URL="https://hcp-cli-download-multicluster-engine.apps.hcp.aws.validatedpatterns.io/linux/amd64/hcp.tar.gz"
+ARG HYPERSHIFT_URL="https://hcp-cli-download-multicluster-engine.apps.hyper1.aws.validatedpatterns.io/linux/amd64/hcp.tar.gz"
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
 LABEL org.opencontainers.image.title="${TITLE}" \
@@ -25,11 +25,11 @@ ARG COLLECTIONS_TO_REMOVE="fortinet cisco dellemc f5networks junipernetworks mel
 ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en langpacks-en"
 ARG RPM_TO_FORCEFULLY_REMOVE="cracklib-dicts"
 # Versions
-ARG OPENSHIFT_CLIENT_VERSION="4.13.27"
-ARG HELM_VERSION="3.12.3"
-ARG ARGOCD_VERSION="2.8.0"
-ARG TKN_CLI_VERSION="0.31.2"
-ARG YQ_VERSION="4.35.1"
+ARG OPENSHIFT_CLIENT_VERSION="4.14.20"
+ARG HELM_VERSION="3.13.3"
+ARG ARGOCD_VERSION="2.9.7"
+ARG TKN_CLI_VERSION="0.35.2"
+ARG YQ_VERSION="4.40.7"
 
 # amd64 - arm64
 ARG TARGETARCH
