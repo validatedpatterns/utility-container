@@ -9,10 +9,10 @@ utility container for simplified execution of imperative commands in each of the
 |:---------------------------------:|:--------:|:------------:|
 |ansible                            |pip       |2.15.11       |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.32.96       |
+|awscli                             |pip       |1.32.104      |
 |azure-cli                          |pip       |2.60.0        |
-|boto3                              |pip       |1.34.96       |
-|botocore                           |pip       |1.34.96       |
+|boto3                              |pip       |1.34.104      |
+|botocore                           |pip       |1.34.104      |
 |gcloud                             |pip       |0.18.3        |
 |git-core                           |package   |2.43.0        |
 |hcp                                |binary    |4.15.0        |
@@ -28,10 +28,10 @@ utility container for simplified execution of imperative commands in each of the
 |python                             |package   |3.9.18        |
 |redhat_cop.controller_configuration|collection|2.3.1         |
 |sshpass                            |package   |1.09          |
-|vp-qe-test-common                  |pip       |development   |
 |tar                                |package   |1.34          |
 |tekton                             |binary    |0.35.2        |
 |vi                                 |package   |8.2.2637      |
+|vp-qe-test-common                  |pip       |0.1.0         |
 
 ## Usage
 **Pull the image**
