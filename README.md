@@ -28,6 +28,7 @@ utility container for simplified execution of imperative commands in each of the
 |python                             |package   |3.9.18        |
 |redhat_cop.controller_configuration|collection|2.3.1         |
 |sshpass                            |package   |1.09          |
+|vp-qe-test-common                  |pip       |development   |
 |tar                                |package   |1.34          |
 |tekton                             |binary    |0.35.2        |
 |vi                                 |package   |8.2.2637      |
