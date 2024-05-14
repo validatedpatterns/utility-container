@@ -31,6 +31,7 @@ utility container for simplified execution of imperative commands in each of the
 |tar                                |package   |1.34          |
 |tekton                             |binary    |0.35.2        |
 |vi                                 |package   |8.2.2637      |
+|vp-qe-test-common                  |pip       |0.1.0         |
 
 ## Usage
 **Pull the image**
