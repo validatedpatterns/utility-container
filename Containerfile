@@ -82,7 +82,7 @@ rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
 RUN pip3 install --no-cache-dir "ansible-core>=2.9" kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize --upgrade && \
 pip3 install --no-cache-dir git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
-ansible-galaxy collection install --collections-path /usr/share/ansible/collections kubernetes.core redhat_cop.controller_configuration amazon.aws && \
+ansible-galaxy collection install --collections-path /usr/share/ansible/collections kubernetes.core community.okd redhat_cop.controller_configuration amazon.aws && \
 rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python azure_sdk_trim.py && rm azure_sdk_trim.py && pip3 uninstall -y humanize && \
