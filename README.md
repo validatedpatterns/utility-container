@@ -7,19 +7,20 @@ utility container for simplified execution of imperative commands in each of the
 
 |               name                |  type    |   version    |
 |:---------------------------------:|:--------:|:------------:|
-|ansible                            |pip       |2.15.11       |
+|ansible                            |pip       |2.15.12       |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.32.104      |
-|azure-cli                          |pip       |2.60.0        |
-|boto3                              |pip       |1.34.104      |
-|botocore                           |pip       |1.34.104      |
+|awscli                             |pip       |1.33.27       |
+|azure-cli                          |pip       |2.62.0        |
+|boto3                              |pip       |1.34.145      |
+|botocore                           |pip       |1.34.145      |
+|community.okd                      |collection|4.0.0         |
 |gcloud                             |pip       |0.18.3        |
-|git-core                           |package   |2.43.0        |
+|git-core                           |package   |2.43.5        |
 |hcp                                |binary    |4.15.0        |
 |helm                               |binary    |v3.13.3       |
 |jq                                 |package   |1.6           |
-|kubernetes.core                    |collection|3.0.1         |
-|kubernetes                         |pip       |29.0.0        |
+|kubernetes.core                    |collection|5.0.0         |
+|kubernetes                         |pip       |30.1.0        |
 |kustomize                          |binary    |v5.0.1        |
 |make                               |package   |4.3           |
 |openshift                          |binary    |4.14.20       |
