@@ -15,6 +15,8 @@ TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
 		echo '* awx.awx: '; ansible-galaxy collection list | grep awx.awx ; \
 		echo '* community.general: '; ansible-galaxy collection list | grep community.general ; \
+		echo '* ansible.posix: '; ansible-galaxy collection list | grep ansible.posix ; \
+		echo '* ansible.utils: '; ansible-galaxy collection list | grep ansible.utils ; \
 		echo '* diff: '; diff --version ; \
 		echo '* find: '; find --version"
 
@@ -108,7 +110,7 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|kubernetes.core collection \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|community.okd collection \";  ansible-galaxy collection list community.okd |grep ^community.okd | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|community.general collection \";  ansible-galaxy collection list community.general |grep ^community.general | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-		echo -n \"|awx.awx collection \";  ansible-galaxy collection list awx.awx |grep ^awx.awx | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
+		echo -n \"|awx.awx collection \";  ansible-galaxy collection list awx.awx |grep ^awx.awx | tr -s ' ' | cut -f2 -d ' '  |tr -d '\n';  echo \" \"; \
 		echo -n \"|ansible.posix collection \";  ansible-galaxy collection list ansible.posix |grep ^ansible.posix | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|ansible.utils collection \";  ansible-galaxy collection list ansible.utils |grep ^ansible.utils | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|redhat_cop.controller_configuration collection \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
