@@ -80,7 +80,7 @@ rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
 # otherwise whatever user openshift runs the container with won't find the collection
 
-RUN pip3 install --no-cache-dir "ansible-core>=2.9" kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize jmespath awxkit --upgrade && \
+RUN pip3 install --no-cache-dir "ansible-core>=2.9" kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize jmespath awxkit pytz --upgrade && \
 pip3 install --no-cache-dir git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
 ansible-galaxy collection install --collections-path /usr/share/ansible/collections ansible.posix ansible.utils kubernetes.core community.okd redhat_cop.controller_configuration infra.controller_configuration community.general awx.awx amazon.aws && \
 rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
