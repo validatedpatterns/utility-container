@@ -19,7 +19,7 @@ TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* ansible.posix: '; ansible-galaxy collection list | grep ansible.posix ; \
 		echo '* ansible.utils: '; ansible-galaxy collection list | grep ansible.utils ; \
 		echo '* diff: '; diff --version ; \
-		echo '* find: '; find --version"; \
+		echo '* find: '; find --version ; \
 		echo '* tea: '; tea --version" ;
 
 ##@ Help-related tasks
@@ -110,7 +110,7 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|awxkit pip \"; pip show awxkit| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
 		echo -n \"|jmespath pip \"; pip show jmespath| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
 		echo -n \"|ansible-runner pip \"; pip show ansible-runner| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
-		echo -n \"|vp-qe-test-common pip \"; pip show vp-qe-test-common | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
+		echo -n \"|vp-qe-test-common pip \"; pip show vp-qe-test-common | grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
 		echo -n \"|kubernetes.core collection \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|community.okd collection \";  ansible-galaxy collection list community.okd |grep ^community.okd | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|community.general collection \";  ansible-galaxy collection list community.general |grep ^community.general | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
