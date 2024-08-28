@@ -9,15 +9,16 @@ utility container for simplified execution of imperative commands in each of the
 |:---------------------------------:|:--------:|:------------:|
 |ansible                            |pip       |2.15.12       |
 |ansible.posix                      |collection|1.5.4         |
-|ansible.utils                      |collection|5.0.0         |
+|ansible-runner                     |pip       |2.4.0         |
+|ansible.utils                      |collection|5.1.0         |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.33.33       |
+|awscli                             |pip       |1.34.8        |
 |awx.awx                            |collection|24.6.1        |
 |awxkit                             |pip       |24.6.1        |
-|azure-cli                          |pip       |2.62.0        |
-|boto3                              |pip       |1.34.151      |
-|botocore                           |pip       |1.34.151      |
-|community.general                  |collection|9.2.0         |
+|azure-cli                          |pip       |2.63.0        |
+|boto3                              |pip       |1.35.8        |
+|botocore                           |pip       |1.35.8        |
+|community.general                  |collection|9.3.0         |
 |community.okd                      |collection|4.0.0         |
 |gcloud                             |pip       |0.18.3        |
 |git-core                           |package   |2.43.5        |
@@ -37,6 +38,7 @@ utility container for simplified execution of imperative commands in each of the
 |redhat_cop.controller_configuration|collection|2.3.1         |
 |sshpass                            |package   |1.09          |
 |tar                                |package   |1.34          |
+|tea                                |binary    |0.9.2         |
 |tekton                             |binary    |0.35.2        |
 |vi                                 |package   |8.2.2637      |
 |vp-qe-test-common                  |pip       |0.1.0         |
