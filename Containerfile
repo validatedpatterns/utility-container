@@ -30,6 +30,7 @@ ARG HELM_VERSION="3.13.3"
 ARG ARGOCD_VERSION="2.9.7"
 ARG TKN_CLI_VERSION="0.35.2"
 ARG YQ_VERSION="4.40.7"
+ARG TEA_VERSION="0.9.2"
 
 # amd64 - arm64
 ARG TARGETARCH
@@ -64,11 +65,12 @@ curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT
 tar xvf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
 curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} && chmod 755 /usr/local/bin/yq && \
+curl -sSL -o /usr/local/bin/tea https://gitea.com/gitea/tea/releases/download/v${TEA_VERSION}/tea-${TEA_VERSION}-linux-${TARGETARCH} && chmod 755 /usr/local/bin/tea && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
 # The hypershift cli is downloaded directly from the cluster.
 # This could change when HCP goes GA - the alternative would
-# be to compile our own, so this seemed the logical choice. 
+# be to compile our own, so this seemed the logical choice.
 
 # humanize is only needed for the trimming of the container
 # See https://github.com/Azure/azure-sdk-for-python/issues/11149
@@ -81,7 +83,7 @@ rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 # otherwise whatever user openshift runs the container with won't find the collection
 
 RUN pip3 install --no-cache-dir "ansible-core>=2.9" kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize jmespath awxkit pytz --upgrade && \
-pip3 install --no-cache-dir git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
+pip3 install --no-cache-dir ansible-runner git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
 ansible-galaxy collection install --collections-path /usr/share/ansible/collections ansible.posix ansible.utils kubernetes.core community.okd redhat_cop.controller_configuration infra.controller_configuration community.general awx.awx amazon.aws && \
 rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
@@ -90,6 +92,8 @@ if [ -n "$EXTRARPMS" ]; then microdnf remove -y $EXTRARPMS; fi && \
 mkdir -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp && \
 find /pattern/.ansible -type d -exec chmod 770 "{}" \; && \
 find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
+
+#RUN pip3 install --no-cache-dir ansible-runner
 
 # We will have two important folders:
 # /pattern which will have the current pattern's git repo bindmounted
