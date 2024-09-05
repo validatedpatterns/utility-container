@@ -12,19 +12,21 @@ utility container for simplified execution of imperative commands in each of the
 |ansible-runner                     |pip       |2.4.0         |
 |ansible.utils                      |collection|5.1.1         |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.34.12       |
+|awscli                             |pip       |1.34.13       |
 |awx.awx                            |collection|24.6.1        |
 |awxkit                             |pip       |24.6.1        |
 |azure-cli                          |pip       |2.64.0        |
-|boto3                              |pip       |1.35.12       |
-|botocore                           |pip       |1.35.12       |
+|boto3                              |pip       |1.35.13       |
+|botocore                           |pip       |1.35.13       |
 |community.general                  |collection|9.3.0         |
 |community.okd                      |collection|4.0.0         |
 |gcloud                             |pip       |0.18.3        |
 |git-core                           |package   |2.43.5        |
 |hcp                                |binary    |4.15.0        |
 |helm                               |binary    |v3.13.3       |
+|infra.ah_configuration             |collection|2.0.6         |
 |infra.controller_configuration     |collection|2.9.0         |
+|infra.eda_configuration            |collection|1.1.0         |
 |jmespath                           |pip       |1.0.1         |
 |jq                                 |package   |1.6           |
 |kubernetes.core                    |collection|5.0.0         |
