@@ -14,6 +14,8 @@ TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
 		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
 		echo '* infra.controller_configuration: '; ansible-galaxy collection list | grep infra.controller_configuration ; \
+		echo '* infra.eda_configuration: '; ansible-galaxy collection list | grep infra.eda_configuration ; \
+		echo '* infra.ah_configuration: '; ansible-galaxy collection list | grep infra.ah_configuration ; \
 		echo '* awx.awx: '; ansible-galaxy collection list | grep awx.awx ; \
 		echo '* community.general: '; ansible-galaxy collection list | grep community.general ; \
 		echo '* ansible.posix: '; ansible-galaxy collection list | grep ansible.posix ; \
@@ -119,6 +121,8 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|ansible.utils collection \";  ansible-galaxy collection list ansible.utils |grep ^ansible.utils | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|redhat_cop.controller_configuration collection \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
 		echo -n \"|infra.controller_configuration collection \";  ansible-galaxy collection list infra.controller_configuration |grep ^infra.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
+		echo -n \"|infra.eda_configuration collection \";  ansible-galaxy collection list infra.eda_configuration |grep ^infra.eda_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
+		echo -n \"|infra.ah_configuration collection \";  ansible-galaxy collection list infra.ah_configuration |grep ^infra.ah_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
     " | sort | column --table -o '|'
 
 .PHONY: run

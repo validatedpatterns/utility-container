@@ -96,7 +96,7 @@ rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
 RUN pip install --no-cache-dir ${ANSIBLE_CORE_SPEC} pytest kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize jmespath awxkit pytz --upgrade && \
 pip install --no-cache-dir ansible-runner git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
-ansible-galaxy collection install --collections-path /usr/share/ansible/collections ansible.posix ansible.utils kubernetes.core community.okd redhat_cop.controller_configuration infra.controller_configuration community.general awx.awx amazon.aws && \
+ansible-galaxy collection install --collections-path /usr/share/ansible/collections ansible.posix ansible.utils kubernetes.core community.okd redhat_cop.controller_configuration infra.controller_configuration infra.eda_configuration infra.ah_configuration community.general awx.awx amazon.aws && \
 rm -rf /usr/local/lib/python${PYTHON_VERSION}/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python3 azure_sdk_trim.py && rm azure_sdk_trim.py && pip uninstall -y humanize && \
@@ -114,6 +114,7 @@ find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
 #USER 1001
 ENV HOME=/pattern-home
 ENV ANSIBLE_REMOTE_TMP=/pattern-home/.ansible/tmp
+ENV ANSIBLE_ASYNC_DIR=/tmp/.ansible/.async
 ENV ANSIBLE_LOCAL_TMP=/pattern-home/.ansible/tmp
 ENV ANSIBLE_LOCALHOST_WARNING=False
 
