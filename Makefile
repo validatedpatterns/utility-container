@@ -3,7 +3,7 @@ TAG ?= latest
 CONTAINER ?= $(NAME):$(TAG)
 
 REGISTRY ?= localhost
-UPLOADREGISTRY ?= quay.io/rhn_support_mbaldess
+UPLOADREGISTRY ?= quay.io/hybridcloudpatterns
 TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* ArgoCD: '; argocd version --client ; \
 		echo '* Tekton: '; tkn version ; \
