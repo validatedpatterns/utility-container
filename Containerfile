@@ -52,7 +52,7 @@ ARG EXTRARPMS
 USER root
 
 # 'pip' is expected to be the pip resolved by 'python3 pip' AKA the one we install with PYTHON_VERSION
-RUN microdnf --disableplugin=subscription-manager install -y ${PYTHON_PKGS}
+RUN microdnf --disableplugin=subscription-manager install -y ${PYTHON_PKGS} && microdnf --disableplugin=subscription-manager clean all
 RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 0
 
 RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass $EXTRARPMS && \
