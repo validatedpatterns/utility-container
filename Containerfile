@@ -32,6 +32,14 @@ ARG TKN_CLI_VERSION="0.35.2"
 ARG YQ_VERSION="4.40.7"
 ARG TEA_VERSION="0.9.2"
 
+# As of 9/5/2024: awxkit is not compatible with python 3.12 due to setuptools
+# Ansible-core 2.16 is needed for losing track of async jobs (as noted in AGOF for infra.controller_configuration)
+# 'pip' will be influenced by where /usr/bin/python3 points, which we take care of with the altnernatives
+# command
+ARG PYTHON_VERSION="3.11"
+ARG PYTHON_PKGS="python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python3-pip"
+ARG ANSIBLE_CORE_SPEC="ansible-core==2.16.*"
+
 # amd64 - arm64
 ARG TARGETARCH
 # x86_64 - aarch64
@@ -43,7 +51,11 @@ ARG EXTRARPMS
 
 USER root
 
-RUN microdnf --disableplugin=subscription-manager install -y python3-pip python3-pytest make git-core tar vi jq which findutils diffutils sshpass $EXTRARPMS && \
+# 'pip' is expected to be the pip resolved by 'python3 pip' AKA the one we install with PYTHON_VERSION
+RUN microdnf --disableplugin=subscription-manager install -y ${PYTHON_PKGS}
+RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 0
+
+RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass $EXTRARPMS && \
 microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
@@ -82,18 +94,16 @@ rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
 # otherwise whatever user openshift runs the container with won't find the collection
 
-RUN pip3 install --no-cache-dir "ansible-core>=2.9" kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize jmespath awxkit pytz --upgrade && \
-pip3 install --no-cache-dir ansible-runner git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
+RUN pip install --no-cache-dir ${ANSIBLE_CORE_SPEC} pytest kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize jmespath awxkit pytz --upgrade && \
+pip install --no-cache-dir ansible-runner git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
 ansible-galaxy collection install --collections-path /usr/share/ansible/collections ansible.posix ansible.utils kubernetes.core community.okd redhat_cop.controller_configuration infra.controller_configuration community.general awx.awx amazon.aws && \
-rm -rf /usr/local/lib/python3.9/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
+rm -rf /usr/local/lib/python${PYTHON_VERSION}/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
-python azure_sdk_trim.py && rm azure_sdk_trim.py && pip3 uninstall -y humanize && \
+python3 azure_sdk_trim.py && rm azure_sdk_trim.py && pip uninstall -y humanize && \
 if [ -n "$EXTRARPMS" ]; then microdnf remove -y $EXTRARPMS; fi && \
 mkdir -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp && \
 find /pattern/.ansible -type d -exec chmod 770 "{}" \; && \
 find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
-
-#RUN pip3 install --no-cache-dir ansible-runner
 
 # We will have two important folders:
 # /pattern which will have the current pattern's git repo bindmounted
