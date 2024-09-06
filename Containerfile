@@ -55,6 +55,9 @@ USER root
 RUN microdnf --disableplugin=subscription-manager install -y ${PYTHON_PKGS} && microdnf --disableplugin=subscription-manager clean all
 RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 0
 
+# Add requirements.yml file for ansible collections
+ADD requirements.yml /tmp/requirements.yml
+
 RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass $EXTRARPMS && \
 microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
@@ -94,9 +97,12 @@ rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
 # otherwise whatever user openshift runs the container with won't find the collection
 
+# Add requirements.yml file for ansible collections
+ADD requirements.yml /tmp/requirements.yml
+
 RUN pip install --no-cache-dir ${ANSIBLE_CORE_SPEC} pytest kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize jmespath awxkit pytz --upgrade && \
 pip install --no-cache-dir ansible-runner git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
-ansible-galaxy collection install --collections-path /usr/share/ansible/collections ansible.posix ansible.utils kubernetes.core community.okd redhat_cop.controller_configuration infra.controller_configuration infra.eda_configuration infra.ah_configuration community.general awx.awx amazon.aws && \
+ansible-galaxy collection install --collections-path /usr/share/ansible/collections -r /tmp/requirements.yml && \
 rm -rf /usr/local/lib/python${PYTHON_VERSION}/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python3 azure_sdk_trim.py && rm azure_sdk_trim.py && pip uninstall -y humanize && \
