@@ -56,7 +56,7 @@ RUN microdnf --disableplugin=subscription-manager install -y ${PYTHON_PKGS} && m
 RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 0
 
 # Add requirements.yml file for ansible collections
-ADD requirements.yml /tmp/requirements.yml
+COPY requirements.yml /tmp/requirements.yml
 
 RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass $EXTRARPMS && \
 microdnf remove -y $DNF_TO_REMOVE && \
