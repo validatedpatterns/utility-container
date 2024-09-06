@@ -97,20 +97,6 @@ rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 # https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
 # otherwise whatever user openshift runs the container with won't find the collection
 
-# Add requirements.yml file for ansible collections
-COPY requirements.yml /tmp/requirements.yml
-
-RUN pip install --no-cache-dir ${ANSIBLE_CORE_SPEC} pytest kubernetes openshift "boto3>=1.21" "botocore>=1.24" "awscli>=1.22" "azure-cli>=2.34" gcloud humanize jmespath awxkit pytz --upgrade && \
-pip install --no-cache-dir ansible-runner git+https://github.com/validatedpatterns/vp-qe-test-common.git@development#egg=vp-qe-test-common --upgrade && \
-ansible-galaxy collection install --collections-path /usr/share/ansible/collections -r /tmp/requirements.yml && \
-rm -rf /usr/local/lib/python${PYTHON_VERSION}/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
-curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
-python3 azure_sdk_trim.py && rm azure_sdk_trim.py && pip uninstall -y humanize && \
-if [ -n "$EXTRARPMS" ]; then microdnf remove -y $EXTRARPMS; fi && \
-mkdir -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp && \
-find /pattern/.ansible -type d -exec chmod 770 "{}" \; && \
-find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
-
 # We will have two important folders:
 # /pattern which will have the current pattern's git repo bindmounted
 # /pattern-home which stays inside the container only
@@ -123,6 +109,22 @@ ENV ANSIBLE_REMOTE_TMP=/pattern-home/.ansible/tmp
 ENV ANSIBLE_ASYNC_DIR=/tmp/.ansible/.async
 ENV ANSIBLE_LOCAL_TMP=/pattern-home/.ansible/tmp
 ENV ANSIBLE_LOCALHOST_WARNING=False
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+# Add requirements.yml file for ansible collections
+COPY requirements.yml /tmp/requirements.yml
+COPY requirements.txt /tmp/requirements.txt
+
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
+ansible-galaxy collection install --collections-path /usr/share/ansible/collections -r /tmp/requirements.yml && \
+rm -rf /usr/local/lib/python${PYTHON_VERSION}/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
+curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
+python3 azure_sdk_trim.py && rm azure_sdk_trim.py && pip uninstall -y humanize && \
+if [ -n "$EXTRARPMS" ]; then microdnf remove -y $EXTRARPMS; fi && \
+mkdir -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp && \
+find /pattern/.ansible -type d -exec chmod 770 "{}" \; && \
+find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
+
 
 # Adding python scripts to start, stop and retrieve status of hostedcluster instnances
 ADD https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/start-instances.py \
