@@ -3,7 +3,7 @@ TAG ?= latest
 CONTAINER ?= $(NAME):$(TAG)
 
 REGISTRY ?= localhost
-UPLOADREGISTRY ?= quay.io/rhn_support_mbaldess
+UPLOADREGISTRY ?= quay.io/hybridcloudpatterns
 TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* ArgoCD: '; argocd version --client ; \
 		echo '* Tekton: '; tkn version ; \
@@ -14,6 +14,8 @@ TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
 		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
 		echo '* infra.controller_configuration: '; ansible-galaxy collection list | grep infra.controller_configuration ; \
+		echo '* infra.eda_configuration: '; ansible-galaxy collection list | grep infra.eda_configuration ; \
+		echo '* infra.ah_configuration: '; ansible-galaxy collection list | grep infra.ah_configuration ; \
 		echo '* awx.awx: '; ansible-galaxy collection list | grep awx.awx ; \
 		echo '* community.general: '; ansible-galaxy collection list | grep community.general ; \
 		echo '* ansible.posix: '; ansible-galaxy collection list | grep ansible.posix ; \
@@ -86,12 +88,11 @@ versions: ## Print all the versions of software in the locally-built container
 		"set -e; \
 		echo -n \"|sshpass package \"; rpm -q --queryformat '%{VERSION}' sshpass; echo \" \"; \
 		echo -n \"|python3-pip package \"; rpm -q --queryformat '%{VERSION}' python3-pip; echo \" \"; \
-		echo -n \"|python3-pytest package \"; rpm -q --queryformat '%{VERSION}' python3-pytest; echo \" \"; \
 		echo -n \"|git-core package \"; rpm -q --qf '%{VERSION}' git-core; echo \" \"; \
 		echo -n \"|vi package \"; rpm -q --qf '%{VERSION}' vim-minimal; echo \" \";  \
 		echo -n \"|tar package \"; rpm -q --qf '%{VERSION}' tar;  echo \" \"; \
 		echo -n \"|make package \"; rpm -q --qf '%{VERSION}' make;  echo \" \"; \
-		echo -n \"|python package \"; rpm -q --qf '%{VERSION}' python3;  echo \" \"; \
+		echo -n \"|python package \";  /usr/bin/python3 --version | sed -e s'/Python //' | tr -d '\n';  echo \" \"; \
 		echo -n \"|jq package \"; rpm -q --qf '%{VERSION}' jq;  echo \" \"; \
 		echo -n \"|argocd binary \"; argocd version --client -o json | jq -j '.client.Version';  echo \" \"; \
 		echo -n \"|helm binary \"; helm version --template '{{ .Version }}';  echo \" \"; \
@@ -100,6 +101,7 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|openshift binary \"; oc version --client -o json | jq -j '.releaseClientVersion';  echo \" \"; \
 		echo -n \"|kustomize binary \"; oc version --client -o json | jq -j '.kustomizeVersion';  echo \" \"; \
 		echo -n \"|hcp binary \"; hcp --version version | cut -d: -f3 | tr -d '\n';  echo \" \"; \
+		echo -n \"|pytest pip \"; pip show pytest | grep ^Version | cut -f2 -d\  |tr -d '\n'; echo \" \"; \
 		echo -n \"|ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d '\n]';  echo \" \"; \
 		echo -n \"|kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
 		echo -n \"|boto3 pip \"; pip show boto3 | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
@@ -119,6 +121,8 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|ansible.utils collection \";  ansible-galaxy collection list ansible.utils |grep ^ansible.utils | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|redhat_cop.controller_configuration collection \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
 		echo -n \"|infra.controller_configuration collection \";  ansible-galaxy collection list infra.controller_configuration |grep ^infra.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
+		echo -n \"|infra.eda_configuration collection \";  ansible-galaxy collection list infra.eda_configuration |grep ^infra.eda_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
+		echo -n \"|infra.ah_configuration collection \";  ansible-galaxy collection list infra.ah_configuration |grep ^infra.ah_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
     " | sort | column --table -o '|'
 
 .PHONY: run
