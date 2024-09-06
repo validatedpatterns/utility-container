@@ -1,3 +1,4 @@
+---
 # Define Ansible collection requirements here
 collections:
   - name: ansible.posix
