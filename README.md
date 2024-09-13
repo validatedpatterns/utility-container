@@ -7,18 +7,18 @@ utility container for simplified execution of imperative commands in each of the
 
 |               name                |  type    |   version    |
 |:---------------------------------:|:--------:|:------------:|
-|ansible                            |pip       |2.16.10       |
+|ansible                            |pip       |2.16.11       |
 |ansible.posix                      |collection|1.5.4         |
 |ansible-runner                     |pip       |2.4.0         |
 |ansible.utils                      |collection|5.1.1         |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.34.13       |
+|awscli                             |pip       |1.34.16       |
 |awx.awx                            |collection|24.6.1        |
 |awxkit                             |pip       |24.6.1        |
 |azure-cli                          |pip       |2.64.0        |
-|boto3                              |pip       |1.35.13       |
-|botocore                           |pip       |1.35.13       |
-|community.general                  |collection|9.3.0         |
+|boto3                              |pip       |1.35.16       |
+|botocore                           |pip       |1.35.16       |
+|community.general                  |collection|9.4.0         |
 |community.okd                      |collection|4.0.0         |
 |gcloud                             |pip       |0.18.3        |
 |git-core                           |package   |2.43.5        |
@@ -34,10 +34,11 @@ utility container for simplified execution of imperative commands in each of the
 |kustomize                          |binary    |v5.0.1        |
 |make                               |package   |4.3           |
 |openshift                          |binary    |4.14.20       |
-|pytest                             |pip       |8.3.2         |
+|pytest                             |pip       |8.3.3         |
 |python3-pip                        |package   |21.2.3        |
 |python                             |package   |3.11.7        |
 |redhat_cop.controller_configuration|collection|2.3.1         |
+|rhvp.cluster_utils                 |collection|1.0.0         |
 |sshpass                            |package   |1.09          |
 |tar                                |package   |1.34          |
 |tea                                |binary    |0.9.2         |

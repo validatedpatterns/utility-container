@@ -12,3 +12,4 @@ collections:
   - name: community.general
   - name: awx.awx
   - name: amazon.aws
+  - name: git+https://github.com/validatedpatterns/rhvp.cluster_utils.git,v1
