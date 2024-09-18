@@ -1,7 +1,7 @@
 ---
 ignored:
   # Last USER should not be root
-  - DL3002 
+  - DL3002
   # Always tag the version of an image explicitly
   - DL3006
   # Using latest is prone to errors if the image will ever update. Pin the
