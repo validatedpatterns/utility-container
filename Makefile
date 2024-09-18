@@ -42,6 +42,8 @@ arm64: manifest podman-build-arm64 test-arm64 ## Build and test the container on
 
 .PHONY: manifest
 manifest: ## creates the buildah manifest for multi-arch images
+	# The rm is needed due to bug https://www.github.com/containers/podman/issues/19757
+	buildah manifest rm "${REGISTRY}/${CONTAINER}" || /bin/true
 	buildah manifest create "${REGISTRY}/${CONTAINER}"
 
 .PHONY: podman-build
