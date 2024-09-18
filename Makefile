@@ -38,7 +38,7 @@ build: manifest podman-build test ## Build the container locally (all arches) an
 amd64: manifest podman-build-amd64 test-amd64 ## Build and test the container on amd64
 
 .PHONY: arm64
-arm64: manifest podman-build-amd64 test-amd64 ## Build and test the container on amd64
+arm64: manifest podman-build-arm64 test-arm64 ## Build and test the container on amd64
 
 .PHONY: manifest
 manifest: ## creates the buildah manifest for multi-arch images
