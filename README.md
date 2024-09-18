@@ -8,16 +8,16 @@ utility container for simplified execution of imperative commands in each of the
 |               name                |  type    |   version    |
 |:---------------------------------:|:--------:|:------------:|
 |ansible                            |pip       |2.16.11       |
-|ansible.posix                      |collection|1.5.4         |
+|ansible.posix                      |collection|1.6.0         |
 |ansible-runner                     |pip       |2.4.0         |
 |ansible.utils                      |collection|5.1.1         |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.34.16       |
+|awscli                             |pip       |1.34.21       |
 |awx.awx                            |collection|24.6.1        |
 |awxkit                             |pip       |24.6.1        |
 |azure-cli                          |pip       |2.64.0        |
-|boto3                              |pip       |1.35.16       |
-|botocore                           |pip       |1.35.16       |
+|boto3                              |pip       |1.35.21       |
+|botocore                           |pip       |1.35.21       |
 |community.general                  |collection|9.4.0         |
 |community.okd                      |collection|4.0.0         |
 |gcloud                             |pip       |0.18.3        |
