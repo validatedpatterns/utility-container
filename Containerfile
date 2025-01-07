@@ -7,7 +7,6 @@ ARG MAINTAINER="Validated Patterns <team-validated-patterns@redhat.com>"
 ARG LICENSE="Apache-2.0"
 ARG URL="https://github.com/validatedpatterns"
 ARG SOURCE="https://github.com/validatedpatterns/utility-container/blob/main/Containerfile"
-ARG HYPERSHIFT_URL="https://hcp-cli-download-multicluster-engine.apps.hyper2.aws.validatedpatterns.io/linux/amd64/hcp.tar.gz"
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
 LABEL org.opencontainers.image.title="${TITLE}" \
@@ -49,6 +48,9 @@ ARG OPTTARGETARCH
 # Extra rpms for specific arches. Needed because on arm64 pip insists on rebuilding psutils
 ARG EXTRARPMS
 
+ARG HYPERSHIFT_VER="2.7.2-1"
+ARG HYPERSHIFT_URL="https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VER}/hcp-cli-${HYPERSHIFT_VER}-linux-${TARGETARCH}.tar.gz"
+
 USER root
 
 # 'pip' is expected to be the pip resolved by 'python3 pip' AKA the one we install with PYTHON_VERSION
@@ -73,7 +75,7 @@ curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}
 tar xf tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
 rm -f tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
 rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
-curl -skLfO ${HYPERSHIFT_URL} && \
+curl -skLf -o hcp.tar.gz ${HYPERSHIFT_URL} && \
 tar xf hcp.tar.gz -C /usr/local/bin/ && \
 rm -f hcp.tar.gz && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
