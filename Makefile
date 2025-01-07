@@ -103,7 +103,7 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|tekton binary \"; tkn version --component client | tr -d '\n';  echo \" \"; \
 		echo -n \"|openshift binary \"; oc version --client -o json | jq -j '.releaseClientVersion';  echo \" \"; \
 		echo -n \"|kustomize binary \"; oc version --client -o json | jq -j '.kustomizeVersion';  echo \" \"; \
-		echo -n \"|hcp binary \"; hcp --version version | cut -d: -f3 | tr -d '\n';  echo \" \"; \
+		echo -n \"|hcp binary \"; hcp version --client-only | cut -f4 -d: | tr -d '\n';  echo \" \"; \
 		echo -n \"|pytest pip \"; pip show pytest | grep ^Version | cut -f2 -d\  |tr -d '\n'; echo \" \"; \
 		echo -n \"|ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d '\n]';  echo \" \"; \
 		echo -n \"|kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
