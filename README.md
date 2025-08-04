@@ -54,6 +54,7 @@ This container provides a pre-configured environment with all the necessary tool
 ## Usage
 
 ### Pull the Image
+
 ```bash
 podman pull quay.io/hybridcloudpatterns/utility-container:latest
 ```
@@ -61,6 +62,7 @@ podman pull quay.io/hybridcloudpatterns/utility-container:latest
 ### Examples
 
 **Interactive shell**
+
 ```bash
 podman run --rm -it --net=host \
   --security-opt label=disable \
@@ -71,6 +73,7 @@ podman run --rm -it --net=host \
 ```
 
 **Execute an Ansible playbook**
+
 ```bash
 podman run --rm -it --net=host \
   --security-opt label=disable \
@@ -82,6 +85,7 @@ podman run --rm -it --net=host \
 ```
 
 **Run OpenShift commands**
+
 ```bash
 podman run --rm -it --net=host \
   --security-opt label=disable \
@@ -109,10 +113,13 @@ podman run --rm -it --net=host \
 ## Development
 
 ### Build the Image
+
 Run `make build` to build both amd64 and arm64 architectures locally (requires qemu-user-static package).
 
 ### Upload to Registry
+
 Run `make upload` to push the image to the official repository.
 
 ### Contributing
+
 To update software versions or add new tools, modify the Containerfile and update the software table in this readme. Use `make versions` to generate the software versions table from the container after building locally.
