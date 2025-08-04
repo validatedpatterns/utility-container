@@ -115,4 +115,4 @@ Run `make build` to build both amd64 and arm64 architectures locally (requires q
 Run `make upload` to push the image to the official repository.
 
 ### Contributing
-To update software versions or add new tools, modify the Containerfile and update the software table in this README. Use `make versions` to generate the software versions table from the container after building locally.
+To update software versions or add new tools, modify the Containerfile and update the software table in this readme. Use `make versions` to generate the software versions table from the container after building locally.
