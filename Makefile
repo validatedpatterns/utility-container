@@ -23,6 +23,7 @@ TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* rhvp.cluster_utils: '; ansible-galaxy collection list | grep rhvp.cluster_utils ; \
 		echo '* diff: '; diff --version ; \
 		echo '* find: '; find --version ; \
+		echo '* gzip: '; gzip --version ; \
 		echo '* tea: '; tea --version" ;
 
 ##@ Help-related tasks
