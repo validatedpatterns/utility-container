@@ -23,6 +23,7 @@ TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* rhvp.cluster_utils: '; ansible-galaxy collection list | grep rhvp.cluster_utils ; \
 		echo '* diff: '; diff --version ; \
 		echo '* find: '; find --version ; \
+		echo '* gzip: '; gzip --version ; \
 		echo '* tea: '; tea --version" ;
 
 ##@ Help-related tasks
@@ -94,6 +95,7 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|git-core package \"; rpm -q --qf '%{VERSION}' git-core; echo \" \"; \
 		echo -n \"|vi package \"; rpm -q --qf '%{VERSION}' vim-minimal; echo \" \";  \
 		echo -n \"|tar package \"; rpm -q --qf '%{VERSION}' tar;  echo \" \"; \
+		echo -n \"|gzip package \"; rpm -q --qf '%{VERSION}' gzip;  echo \" \"; \
 		echo -n \"|make package \"; rpm -q --qf '%{VERSION}' make;  echo \" \"; \
 		echo -n \"|python package \";  /usr/bin/python3 --version | sed -e s'/Python //' | tr -d '\n';  echo \" \"; \
 		echo -n \"|jq package \"; rpm -q --qf '%{VERSION}' jq;  echo \" \"; \
