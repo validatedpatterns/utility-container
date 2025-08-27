@@ -17,16 +17,17 @@ This container provides a pre-configured environment with all the necessary tool
 |ansible-runner                     |pip       |2.4.1         |
 |ansible.utils                      |collection|6.0.0         |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.42.1        |
+|awscli                             |pip       |1.42.18       |
 |awx.awx                            |collection|24.6.1        |
 |awxkit                             |pip       |24.6.1        |
-|azure-cli                          |pip       |2.75.0        |
-|boto3                              |pip       |1.40.1        |
-|botocore                           |pip       |1.40.1        |
-|community.general                  |collection|11.1.1        |
+|azure-cli                          |pip       |2.76.0        |
+|boto3                              |pip       |1.40.18       |
+|botocore                           |pip       |1.40.18       |
+|community.general                  |collection|11.2.1        |
 |community.okd                      |collection|5.0.0         |
 |gcloud                             |pip       |0.18.3        |
 |git-core                           |package   |2.47.3        |
+|gzip                               |package   |1.12          |
 |hcp                                |binary    |4.17.0        |
 |helm                               |binary    |v3.13.3       |
 |infra.ah_configuration             |collection|2.1.0         |
@@ -34,7 +35,7 @@ This container provides a pre-configured environment with all the necessary tool
 |infra.eda_configuration            |collection|1.1.0         |
 |jmespath                           |pip       |1.0.1         |
 |jq                                 |package   |1.6           |
-|kubernetes.core                    |collection|6.0.0         |
+|kubernetes.core                    |collection|6.1.0         |
 |kubernetes                         |pip       |33.1.0        |
 |kustomize                          |binary    |v5.0.1        |
 |make                               |package   |4.3           |
