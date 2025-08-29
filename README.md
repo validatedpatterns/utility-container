@@ -1,6 +1,6 @@
-# Validated Pattern Utility Container
+# Validated Patterns Utility Container
 
-[![Quay Repository](https://img.shields.io/badge/Quay.io-utility--container-blue?logo=quay)](https://quay.io/repository/hybridcloudpatterns/utility-container)
+[![Quay Repository](https://img.shields.io/badge/Quay.io-utility--container-blue?logo=quay)](https://quay.io/repository/validatedpatterns/utility-container)
 
 A utility container for simplified execution of imperative commands in each of the Validated Patterns.
 
@@ -17,12 +17,12 @@ This container provides a pre-configured environment with all the necessary tool
 |ansible-runner                     |pip       |2.4.1         |
 |ansible.utils                      |collection|6.0.0         |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.42.18       |
+|awscli                             |pip       |1.42.20       |
 |awx.awx                            |collection|24.6.1        |
 |awxkit                             |pip       |24.6.1        |
 |azure-cli                          |pip       |2.76.0        |
-|boto3                              |pip       |1.40.18       |
-|botocore                           |pip       |1.40.18       |
+|boto3                              |pip       |1.40.20       |
+|botocore                           |pip       |1.40.20       |
 |community.general                  |collection|11.2.1        |
 |community.okd                      |collection|5.0.0         |
 |gcloud                             |pip       |0.18.3        |
@@ -57,7 +57,7 @@ This container provides a pre-configured environment with all the necessary tool
 ### Pull the Image
 
 ```bash
-podman pull quay.io/hybridcloudpatterns/utility-container:latest
+podman pull quay.io/validatedpatterns/utility-container:latest
 ```
 
 ### Examples
@@ -70,7 +70,7 @@ podman run --rm -it --net=host \
   -v ${HOME}:/pattern \
   -v ${HOME}:${HOME} \
   -w $(pwd) \
-  quay.io/hybridcloudpatterns/utility-container:latest sh
+  quay.io/validatedpatterns/utility-container:latest sh
 ```
 
 **Execute an Ansible playbook**
@@ -81,7 +81,7 @@ podman run --rm -it --net=host \
   -v ${HOME}:/pattern \
   -v ${HOME}:${HOME} \
   -w $(pwd) \
-  quay.io/hybridcloudpatterns/utility-container:latest \
+  quay.io/validatedpatterns/utility-container:latest \
   ansible-playbook <playbook>.yml
 ```
 
@@ -93,7 +93,7 @@ podman run --rm -it --net=host \
   -v ${HOME}:/pattern \
   -v ${HOME}:${HOME} \
   -w $(pwd) \
-  quay.io/hybridcloudpatterns/utility-container:latest \
+  quay.io/validatedpatterns/utility-container:latest \
   oc get nodes
 ```
 
