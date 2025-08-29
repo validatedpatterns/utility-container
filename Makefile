@@ -3,7 +3,7 @@ TAG ?= latest
 CONTAINER ?= $(NAME):$(TAG)
 
 REGISTRY ?= localhost
-UPLOADREGISTRY ?= quay.io/hybridcloudpatterns
+UPLOADREGISTRY ?= quay.io/validatedpatterns
 TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
 		echo '* ArgoCD: '; argocd version --client ; \
 		echo '* Tekton: '; tkn version ; \
@@ -161,7 +161,7 @@ super-linter: ## Runs super linter locally
 					ghcr.io/super-linter/super-linter:slim-v8
 
 .PHONY: upload
-upload: ## Uploads the container to quay.io/hybridcloudpatterns/${CONTAINER}
+upload: ## Uploads the container to quay.io/validatedpatterns/${CONTAINER}
 	@echo "Uploading the ${REGISTRY}/${CONTAINER} container to ${UPLOADREGISTRY}/${CONTAINER}"
 	buildah manifest push --all "${REGISTRY}/${CONTAINER}" "docker://${UPLOADREGISTRY}/${CONTAINER}"
 
@@ -200,4 +200,3 @@ cluster-stop: ## Stops the hosted-cluster machines
 		-v ${HOME}:${HOME} \
 		-v ${HOME}/.aws:/pattern-home/.aws \
 		"${REGISTRY}/${CONTAINER}" python3 /usr/local/bin/stop-instances.py -f ${CLUSTER}
-
