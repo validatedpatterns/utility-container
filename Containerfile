@@ -53,6 +53,8 @@ ARG HYPERSHIFT_URL="https://developers.redhat.com/content-gateway/file/pub/mce/c
 
 USER root
 
+ADD https://cli.github.com/packages/rpm/gh-cli.repo /etc/yum.repos.d/gh-cli.repo
+
 # 'pip' is expected to be the pip resolved by 'python3 pip' AKA the one we install with PYTHON_VERSION
 RUN microdnf --disableplugin=subscription-manager install -y ${PYTHON_PKGS} && microdnf --disableplugin=subscription-manager clean all
 RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 0
@@ -60,7 +62,7 @@ RUN alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERS
 # Add requirements.yml file for ansible collections
 COPY requirements.yml /tmp/requirements.yml
 
-RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass gzip $EXTRARPMS && \
+RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass gzip gh $EXTRARPMS && \
 microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \

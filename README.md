@@ -26,6 +26,7 @@ This container provides a pre-configured environment with all the necessary tool
 |community.general                  |collection|11.2.1        |
 |community.okd                      |collection|5.0.0         |
 |gcloud                             |pip       |0.18.3        |
+|gh                                 |package   |2.78.0        |
 |git-core                           |package   |2.47.3        |
 |gzip                               |package   |1.12          |
 |hcp                                |binary    |4.17.0        |
