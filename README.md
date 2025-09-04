@@ -1,6 +1,8 @@
 # Validated Patterns Utility Container
 
+![Version: 1.0.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square)
 [![Quay Repository](https://img.shields.io/badge/Quay.io-utility--container-blue?logo=quay)](https://quay.io/repository/validatedpatterns/utility-container)
+[![CI Pipeline](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml)
 
 A utility container for simplified execution of imperative commands in each of the Validated Patterns.
 
@@ -17,12 +19,12 @@ This container provides a pre-configured environment with all the necessary tool
 |ansible-runner                     |pip       |2.4.1         |
 |ansible.utils                      |collection|6.0.0         |
 |argocd                             |binary    |v2.9.7+fbb6b20|
-|awscli                             |pip       |1.42.20       |
+|awscli                             |pip       |1.42.25       |
 |awx.awx                            |collection|24.6.1        |
 |awxkit                             |pip       |24.6.1        |
-|azure-cli                          |pip       |2.76.0        |
-|boto3                              |pip       |1.40.20       |
-|botocore                           |pip       |1.40.20       |
+|azure-cli                          |pip       |2.77.0        |
+|boto3                              |pip       |1.40.25       |
+|botocore                           |pip       |1.40.25       |
 |community.general                  |collection|11.2.1        |
 |community.okd                      |collection|5.0.0         |
 |gcloud                             |pip       |0.18.3        |
@@ -32,7 +34,7 @@ This container provides a pre-configured environment with all the necessary tool
 |hcp                                |binary    |4.17.0        |
 |helm                               |binary    |v3.13.3       |
 |infra.ah_configuration             |collection|2.1.0         |
-|infra.controller_configuration     |collection|3.1.2         |
+|infra.controller_configuration     |collection|3.1.3         |
 |infra.eda_configuration            |collection|1.1.0         |
 |jmespath                           |pip       |1.0.1         |
 |jq                                 |package   |1.6           |
@@ -41,7 +43,7 @@ This container provides a pre-configured environment with all the necessary tool
 |kustomize                          |binary    |v5.0.1        |
 |make                               |package   |4.3           |
 |openshift                          |binary    |4.14.20       |
-|pytest                             |pip       |8.4.1         |
+|pytest                             |pip       |8.4.2         |
 |python3-pip                        |package   |21.3.1        |
 |python                             |package   |3.11.11       |
 |redhat_cop.controller_configuration|collection|2.3.1         |
