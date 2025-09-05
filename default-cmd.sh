@@ -1,6 +1,6 @@
 #!/bin/bash
 echo -e \
-"
+	"
        1          Welcome to the Validate Pattern utility container
       111         It contains all the needed components to install a pattern.
      1   1

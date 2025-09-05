@@ -1,10 +1,10 @@
----
 name: "Container build and test"
 
 on:
   workflow_call:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   podman-build:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Utility Container Build
         run: make manifest podman-build-amd64

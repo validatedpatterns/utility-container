@@ -1,42 +1,15 @@
----
 name: Super linter
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    # Name the Job
-    name: Super linter
-    # Set the agent to run on
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v5
-        with:
-          # Full git history is needed to get a proper list of changed files
-          # within `super-linter`
-          fetch-depth: 0
-
-      ################################
-      # Run Linter against code base #
-      ################################
-      - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v8
-        env:
-          VALIDATE_ALL_CODEBASE: true
-          VALIDATE_CHECKOV: false
-          VALIDATE_GITHUB_ACTIONS_ZIZMOR: false
-          VALIDATE_JSON_PRETTIER: false
-          VALIDATE_MARKDOWN_PRETTIER: false
-          VALIDATE_NATURAL_LANGUAGE: false
-          VALIDATE_PYTHON_PYLINT: false
-          VALIDATE_SHELL_SHFMT: false
-          VALIDATE_TRIVY: false
-          VALIDATE_YAML: false
-          VALIDATE_YAML_PRETTIER: false
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # These are the validation we disable atm
+  lint:
+    uses: validatedpatterns/github-actions-library/.github/workflows/superlinter.yml@v1
+    with:
+      sl_env: |
+        VALIDATE_TRIVY=false
