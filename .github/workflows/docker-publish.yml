@@ -39,7 +39,7 @@ jobs:
 
       - name: Install buildah
         run: |
-          sudo apt-get update -y && apt-get install -y --no-install-recommends buildah
+          sudo apt-get update -y && sudo apt-get install -y --no-install-recommends buildah
         env:
           DEBIAN_FRONTEND: noninteractive
 
