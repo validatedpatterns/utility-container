@@ -15,7 +15,7 @@ on:
 env:
   REGISTRY: localhost
   NAME: utility-container
-  TAG: ${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+  TAG: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || (github.ref_name == 'main' && 'latest' || github.ref_name) }}
 
 jobs:
   test:
