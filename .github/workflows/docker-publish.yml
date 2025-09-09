@@ -106,11 +106,8 @@ jobs:
           buildah pull docker-archive:/tmp/image-arm64.tar
 
       - name: Log into Quay
-        env:
-          USERNAME: ${{ secrets[matrix.username_secret] }}
-          PASSWORD: ${{ secrets[matrix.password_secret] }}
         run: |
-          buildah login -u "$USERNAME" -p "$PASSWORD" quay.io
+          buildah login -u ${{ secrets[matrix.username_secret] }} -p ${{ secrets[matrix.password_secret] }} quay.io
 
       - name: Create manifest and push to Quay
         id: manifest-push
