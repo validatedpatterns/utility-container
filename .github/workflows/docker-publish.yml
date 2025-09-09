@@ -47,7 +47,6 @@ jobs:
 
       - name: Build container and save tarball
         run: |
-          set -x
           make ${{ matrix.targetarch }}
           buildah push ${{ env.LOCAL_IMAGE_NAME }} docker-archive:/tmp/image-${{ matrix.targetarch }}.tar:${{ env.LOCAL_IMAGE_NAME }}
         env:
@@ -62,83 +61,83 @@ jobs:
           path: /tmp/image-${{ matrix.targetarch }}.tar
           retention-days: 1
 
-  # create-multiarch-manifest:
-  #   needs: [build-container]
-  #   # if: github.event_name != 'pull_request'
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - upload_registry: quay.io/validatedpatterns
-  #           username_secret: QUAY_USERNAME
-  #           password_secret: QUAY_PASSWORD
-  #         - upload_registry: quay.io/hybridcloudpatterns
-  #           username_secret: LEGACY_QUAY_USERNAME
-  #           password_secret: LEGACY_QUAY_PASSWORD
+  create-multiarch-manifest:
+    needs: [build-container]
+    # if: github.event_name != 'pull_request'
+    strategy:
+      matrix:
+        include:
+          - upload_registry: quay.io/validatedpatterns
+            username_secret: QUAY_USERNAME
+            password_secret: QUAY_PASSWORD
+          - upload_registry: quay.io/hybridcloudpatterns
+            username_secret: LEGACY_QUAY_USERNAME
+            password_secret: LEGACY_QUAY_PASSWORD
 
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     # This is used to complete the identity challenge
-  #     # with sigstore/fulcio when running outside of PRs.
-  #     id-token: write
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
 
-  #   steps:
-  #     - name: Download AMD64 image
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: image-amd64-${{ github.run_id }}
-  #         path: /tmp
+    steps:
+      - name: Download AMD64 image
+        uses: actions/download-artifact@v4
+        with:
+          name: image-amd64-${{ github.run_id }}
+          path: /tmp
 
-  #     - name: Download ARM64 image
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: image-arm64-${{ github.run_id }}
-  #         path: /tmp
+      - name: Download ARM64 image
+        uses: actions/download-artifact@v4
+        with:
+          name: image-arm64-${{ github.run_id }}
+          path: /tmp
 
-  #     - name: Install buildah
-  #       run: |
-  #         sudo apt-get update -y && sudo apt-get install -y --no-install-recommends buildah
-  #       env:
-  #         DEBIAN_FRONTEND: noninteractive
+      - name: Install buildah
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y --no-install-recommends buildah
+        env:
+          DEBIAN_FRONTEND: noninteractive
 
-  #     - name: Load tarballs into local containers-storage
-  #       run: |
-  #         buildah pull docker-archive:/tmp/image-amd64.tar
-  #         buildah pull docker-archive:/tmp/image-arm64.tar
+      - name: Load tarballs into local containers-storage
+        run: |
+          buildah pull docker-archive:/tmp/image-amd64.tar
+          buildah pull docker-archive:/tmp/image-arm64.tar
 
-  #     - name: Log into Quay
-  #       env:
-  #         USERNAME: ${{ secrets[matrix.username_secret] }}
-  #         PASSWORD: ${{ secrets[matrix.password_secret] }}
-  #       run: |
-  #         buildah login -u "$USERNAME" -p "$PASSWORD" quay.io
+      - name: Log into Quay
+        env:
+          USERNAME: ${{ secrets[matrix.username_secret] }}
+          PASSWORD: ${{ secrets[matrix.password_secret] }}
+        run: |
+          buildah login -u "$USERNAME" -p "$PASSWORD" quay.io
 
-  #     - name: Create manifest and push to Quay
-  #       id: manifest-push
-  #       run: |
-  #         make manifest
-  #         buildah manifest add --arch=amd64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-amd64"
-  #         buildah manifest add --arch=arm64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-arm64"
-  #         make upload
-  #       env:
-  #         UPLOADREGISTRY: ${{ matrix.upload_registry }}
-  #         LOCAL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.NAME }}:${{ env.TAG }}
+      - name: Create manifest and push to Quay
+        id: manifest-push
+        run: |
+          make manifest
+          buildah manifest add --arch=amd64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-amd64"
+          buildah manifest add --arch=arm64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-arm64"
+          make upload
+        env:
+          UPLOADREGISTRY: ${{ matrix.upload_registry }}
+          LOCAL_IMAGE_NAME: ${{ env.NAME }}:${{ env.TAG }}
 
-  #     # - name: Install cosign
-  #     #   uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
-  #     #   with:
-  #     #     cosign-release: "v2.2.4"
+      # - name: Install cosign
+      #   uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
+      #   with:
+      #     cosign-release: "v2.2.4"
 
-  #     # # Sign the resulting Docker image digest
-  #     # # This will only write to the public Rekor transparency log when the Docker
-  #     # # repository is public to avoid leaking data.  If you would like to publish
-  #     # # transparency data even for private images, pass --force to cosign below.
-  #     # # https://github.com/sigstore/cosign
-  #     # - name: Sign the published Docker image
-  #     #   env:
-  #     #     # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-  #     #     TAGS: ${{ steps.meta.outputs.tags }}
-  #     #     DIGEST: ${{ steps.push-manifest.outputs.digest }}
-  #     #   # This step uses the identity token to provision an ephemeral certificate
-  #     #   # against the sigstore community Fulcio instance.
-  #     #   run: echo "${TAGS}" | xargs -I "{}" cosign sign --yes "{}@${DIGEST}"
+      # # Sign the resulting Docker image digest
+      # # This will only write to the public Rekor transparency log when the Docker
+      # # repository is public to avoid leaking data.  If you would like to publish
+      # # transparency data even for private images, pass --force to cosign below.
+      # # https://github.com/sigstore/cosign
+      # - name: Sign the published Docker image
+      #   env:
+      #     # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+      #     TAGS: ${{ steps.meta.outputs.tags }}
+      #     DIGEST: ${{ steps.push-manifest.outputs.digest }}
+      #   # This step uses the identity token to provision an ephemeral certificate
+      #   # against the sigstore community Fulcio instance.
+      #   run: echo "${TAGS}" | xargs -I "{}" cosign sign --yes "{}@${DIGEST}"
