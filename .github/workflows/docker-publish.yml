@@ -13,7 +13,9 @@ on:
     types: [dependency-updated]
 
 env:
-  CONTAINER: utility-container:latest
+  REGISTRY: localhost
+  NAME: utility-container
+  TAG: ${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
 
 jobs:
   test:
@@ -43,12 +45,13 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
 
-      - name: Build and save tarball
+      - name: Build container and save tarball
         run: |
+          set -x
           make ${{ matrix.targetarch }}
-          buildah push "$TAG" "docker-archive:/tmp/image-${{ matrix.targetarch }}.tar:$TAG"
+          buildah push ${{ env.LOCAL_IMAGE_NAME }} docker-archive:/tmp/image-${{ matrix.targetarch }}.tar:${{ env.LOCAL_IMAGE_NAME }}
         env:
-          TAG: ${{ env.CONTAINER }}-${{ matrix.targetarch }}
+          LOCAL_IMAGE_NAME: ${{ env.NAME }}:${{ env.TAG }}-${{ matrix.targetarch }}
 
       # Upload image as artifact
       - name: Upload image artifact
@@ -61,14 +64,14 @@ jobs:
 
   # create-multiarch-manifest:
   #   needs: [build-container]
-  #   if: github.event_name != 'pull_request'
+  #   # if: github.event_name != 'pull_request'
   #   strategy:
   #     matrix:
   #       include:
-  #         - image_name: validatedpatterns/utility-container
+  #         - upload_registry: quay.io/validatedpatterns
   #           username_secret: QUAY_USERNAME
   #           password_secret: QUAY_PASSWORD
-  #         - image_name: hybridcloudpatterns/utility-container
+  #         - upload_registry: quay.io/hybridcloudpatterns
   #           username_secret: LEGACY_QUAY_USERNAME
   #           password_secret: LEGACY_QUAY_PASSWORD
 
@@ -80,102 +83,62 @@ jobs:
   #     id-token: write
 
   #   steps:
-  #     # Download image artifacts
   #     - name: Download AMD64 image
   #       uses: actions/download-artifact@v4
   #       with:
   #         name: image-amd64-${{ github.run_id }}
-  #         path: /tmp/
+  #         path: /tmp
 
   #     - name: Download ARM64 image
   #       uses: actions/download-artifact@v4
   #       with:
   #         name: image-arm64-${{ github.run_id }}
-  #         path: /tmp/
+  #         path: /tmp
 
   #     - name: Install buildah
   #       run: |
-  #         set -euo pipefail
-  #         sudo apt-get update -y
-  #         sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-  #           buildah
+  #         sudo apt-get update -y && sudo apt-get install -y --no-install-recommends buildah
+  #       env:
+  #         DEBIAN_FRONTEND: noninteractive
 
   #     - name: Load tarballs into local containers-storage
   #       run: |
-  #         set -euo pipefail
   #         buildah pull docker-archive:/tmp/image-amd64.tar
   #         buildah pull docker-archive:/tmp/image-arm64.tar
-  #         OLD_IMAGE_BASE="${{ env.REGISTRY }}/${{ env.QUAY_IMAGE_NAME }}"
-  #         NEW_IMAGE_BASE="${{ env.REGISTRY }}/${{ matrix.image_name }}"
-  #         buildah tag "${OLD_IMAGE_BASE}:build-${{ github.run_id }}-amd64" "${NEW_IMAGE_BASE}:build-${{ github.run_id }}-amd64"
-  #         buildah tag "${OLD_IMAGE_BASE}:build-${{ github.run_id }}-arm64" "${NEW_IMAGE_BASE}:build-${{ github.run_id }}-arm64"
 
-  #     # Install the cosign tool
-  #     # https://github.com/sigstore/cosign-installer
-  #     - name: Install cosign
-  #       uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
-  #       with:
-  #         cosign-release: "v2.2.4"
-
-  #     - name: Log into registry ${{ env.REGISTRY }} with buildah
+  #     - name: Log into Quay
   #       env:
-  #         REGISTRY: ${{ env.REGISTRY }}
   #         USERNAME: ${{ secrets[matrix.username_secret] }}
   #         PASSWORD: ${{ secrets[matrix.password_secret] }}
   #       run: |
-  #         set -euo pipefail
-  #         buildah login -u "$USERNAME" -p "$PASSWORD" "$REGISTRY"
+  #         buildah login -u "$USERNAME" -p "$PASSWORD" quay.io
 
-  #     - name: Create manifest and push with buildah (no intermediate pushes)
+  #     - name: Create manifest and push to Quay
   #       id: manifest-push
   #       run: |
-  #         set -euo pipefail
-  #         IMAGE_BASE="${{ env.REGISTRY }}/${{ matrix.image_name }}"
-  #         MANIFEST_NAME="${IMAGE_BASE}:manifest-${{ github.run_id }}"
-  #         buildah manifest rm "$MANIFEST_NAME" || true
-  #         buildah manifest create "$MANIFEST_NAME"
-  #         buildah manifest add "$MANIFEST_NAME" "${IMAGE_BASE}:build-${{ github.run_id }}-amd64"
-  #         buildah manifest add "$MANIFEST_NAME" "${IMAGE_BASE}:build-${{ github.run_id }}-arm64"
-
-  #     # Extract metadata for multi-arch manifest
-  #     - name: Extract Docker metadata for manifest
-  #       id: meta
-  #       uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
-  #       with:
-  #         images: ${{ env.REGISTRY }}/${{ matrix.image_name }}
-  #         flavor: |
-  #           latest=${{ github.ref == 'refs/heads/main' }}
-
-  #     - name: Tag and push manifest to final tags
-  #       id: push-manifest
-  #       run: |
-  #         set -euo pipefail
-  #         IMAGE_BASE="${{ env.REGISTRY }}/${{ matrix.image_name }}"
-  #         TAGS="${{ steps.meta.outputs.tags }}"
-  #         MANIFEST_NAME="${IMAGE_BASE}:manifest-${{ github.run_id }}"
-  #         DIGEST_FILE=/tmp/manifest.digest
-  #         FIRST=true
-  #         for TAG in $TAGS; do
-  #           echo "Pushing manifest to: $TAG"
-  #           if [ "$FIRST" = true ]; then
-  #             buildah manifest push --all --digestfile "$DIGEST_FILE" "$MANIFEST_NAME" "docker://$TAG"
-  #             FIRST=false
-  #           else
-  #             buildah manifest push --all "$MANIFEST_NAME" "docker://$TAG"
-  #           fi
-  #         done
-  #         echo "digest=$(cat $DIGEST_FILE)" >> "$GITHUB_OUTPUT"
-
-  #     # Sign the resulting Docker image digest
-  #     # This will only write to the public Rekor transparency log when the Docker
-  #     # repository is public to avoid leaking data.  If you would like to publish
-  #     # transparency data even for private images, pass --force to cosign below.
-  #     # https://github.com/sigstore/cosign
-  #     - name: Sign the published Docker image
+  #         make manifest
+  #         buildah manifest add --arch=amd64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-amd64"
+  #         buildah manifest add --arch=arm64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-arm64"
+  #         make upload
   #       env:
-  #         # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-  #         TAGS: ${{ steps.meta.outputs.tags }}
-  #         DIGEST: ${{ steps.push-manifest.outputs.digest }}
-  #       # This step uses the identity token to provision an ephemeral certificate
-  #       # against the sigstore community Fulcio instance.
-  #       run: echo "${TAGS}" | xargs -I "{}" cosign sign --yes "{}@${DIGEST}"
+  #         UPLOADREGISTRY: ${{ matrix.upload_registry }}
+  #         LOCAL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.NAME }}:${{ env.TAG }}
+
+  #     # - name: Install cosign
+  #     #   uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
+  #     #   with:
+  #     #     cosign-release: "v2.2.4"
+
+  #     # # Sign the resulting Docker image digest
+  #     # # This will only write to the public Rekor transparency log when the Docker
+  #     # # repository is public to avoid leaking data.  If you would like to publish
+  #     # # transparency data even for private images, pass --force to cosign below.
+  #     # # https://github.com/sigstore/cosign
+  #     # - name: Sign the published Docker image
+  #     #   env:
+  #     #     # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+  #     #     TAGS: ${{ steps.meta.outputs.tags }}
+  #     #     DIGEST: ${{ steps.push-manifest.outputs.digest }}
+  #     #   # This step uses the identity token to provision an ephemeral certificate
+  #     #   # against the sigstore community Fulcio instance.
+  #     #   run: echo "${TAGS}" | xargs -I "{}" cosign sign --yes "{}@${DIGEST}"
