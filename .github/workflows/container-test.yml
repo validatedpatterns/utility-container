@@ -1,10 +1,10 @@
----
 name: "Container build and test"
 
 on:
   workflow_call:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   podman-build:
@@ -14,8 +14,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Utility Container Build
-        run: make manifest podman-build-amd64
+      - name: Download AMD64 image
+        uses: actions/download-artifact@v5
+        with:
+          name: image-amd64-${{ github.run_id }}
+          path: /tmp
+
+      - name: Load tarballs into local containers-storage
+        run: |
+          buildah pull docker-archive:/tmp/image-amd64.tar
+          make manifest
+          buildah manifest add --arch=amd64 "${{ env.CONTAINER }}" "${{ env.CONTAINER }}-amd64"
+        env:
+          CONTAINER: utility-container:latest
 
       - name: Run Container tests
         run: make test-amd64

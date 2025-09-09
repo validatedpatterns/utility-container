@@ -1,10 +1,8 @@
----
-name: Docker build and push to quay
+name: Build (amd64 and arm64) and push to quay registries
 
 on:
   push:
     branches: ["main"]
-    # Publish semver tags as releases.
     tags: ["v*.*.*"]
   pull_request:
     branches: ["main"]
@@ -15,32 +13,19 @@ on:
     types: [dependency-updated]
 
 env:
-  # Use docker.io for Docker Hub if empty
-  REGISTRY: quay.io
-  # Generic image name for build artifacts, will be retagged for specific repos
-  QUAY_IMAGE_NAME: localhost/utility-container
+  REGISTRY: localhost
+  NAME: utility-container
+  TAG: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || (github.ref_name == 'main' && 'latest' || github.ref_name) }}
 
 jobs:
-  test:
-    uses: ./.github/workflows/container-test.yml
-
   build-container:
-    needs: [test]
     strategy:
       matrix:
         include:
           - targetarch: amd64
             runner: ubuntu-latest
-            platform: linux/amd64
-            alttargetarch: x86_64
-            opttargetarch: ""
-            extrarpms: ""
           - targetarch: arm64
             runner: ubuntu-24.04-arm
-            platform: linux/arm64
-            alttargetarch: aarch64
-            opttargetarch: "arm64-"
-            extrarpms: "gcc python3-devel glibc-devel libxcrypt-devel"
 
     runs-on: ${{ matrix.runner }}
     permissions:
@@ -50,50 +35,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      # Set up BuildKit Docker container builder for docker save functionality
-      # https://github.com/docker/setup-buildx-action
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+      - name: Build container and save tarball
+        run: |
+          make ${{ matrix.targetarch }}
+          buildah push ${{ env.CONTAINER }}-${{ matrix.targetarch }} docker-archive:/tmp/image-${{ matrix.targetarch }}.tar:${{ env.CONTAINER }}-${{ matrix.targetarch }}
+        env:
+          CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
 
-      # https://github.com/docker/build-push-action
-      # Build Docker image with Buildx. We always disable the cache as
-      # it sometimes would not pull the new git changes for the cluster_utils,v1
-      - name: Build Docker image
-        id: build-and-push
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
-        with:
-          context: .
-          file: Containerfile
-          platforms: ${{ matrix.platform }}
-          push: false
-          tags: ${{ env.REGISTRY }}/${{ env.QUAY_IMAGE_NAME }}:build-${{ github.run_id }}-${{ matrix.targetarch }}
-          no-cache: true
-          outputs: type=docker,dest=/tmp/image-${{ matrix.targetarch }}.tar
-          build-args: |
-            TARGETARCH=${{ matrix.targetarch }}
-            ALTTARGETARCH=${{ matrix.alttargetarch }}
-            OPTTARGETARCH=${{ matrix.opttargetarch }}
-            EXTRARPMS=${{ matrix.extrarpms }}
-
-      # Upload image as artifact
       - name: Upload image artifact
-        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: image-${{ matrix.targetarch }}-${{ github.run_id }}
           path: /tmp/image-${{ matrix.targetarch }}.tar
           retention-days: 1
 
-  create-multiarch-manifest:
+  test-container:
     needs: [build-container]
-    if: github.event_name != 'pull_request'
+    uses: ./.github/workflows/container-test.yml
+
+  push-multiarch-manifest:
+    needs: [test-container]
+    # if: github.event_name != 'pull_request'
     strategy:
       matrix:
         include:
-          - image_name: validatedpatterns/utility-container
+          - upload_registry: quay.io/validatedpatterns
             username_secret: QUAY_USERNAME
             password_secret: QUAY_PASSWORD
-          - image_name: hybridcloudpatterns/utility-container
+          - upload_registry: quay.io/hybridcloudpatterns
             username_secret: LEGACY_QUAY_USERNAME
             password_secret: LEGACY_QUAY_PASSWORD
 
@@ -105,110 +74,58 @@ jobs:
       id-token: write
 
     steps:
-      # Download image artifacts
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       - name: Download AMD64 image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: image-amd64-${{ github.run_id }}
-          path: /tmp/
+          path: /tmp
 
       - name: Download ARM64 image
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: image-arm64-${{ github.run_id }}
-          path: /tmp/
+          path: /tmp
 
-      # Load images into Docker and retag for this repo
-      - name: Load and retag images
+      - name: Load tarballs into local containers-storage
         run: |
-          docker load --input /tmp/image-amd64.tar
-          docker load --input /tmp/image-arm64.tar
+          buildah pull docker-archive:/tmp/image-amd64.tar
+          buildah pull docker-archive:/tmp/image-arm64.tar
 
-          # Retag loaded images for this specific repo
-          OLD_IMAGE_BASE="${{ env.REGISTRY }}/${{ env.QUAY_IMAGE_NAME }}"
-          NEW_IMAGE_BASE="${{ env.REGISTRY }}/${{ matrix.image_name }}"
+      - name: Log into Quay
+        run: |
+          buildah login -u ${{ env.USERNAME }} -p ${{ env.PASSWORD }} quay.io
+        env:
+          USERNAME: ${{ secrets[matrix.username_secret] }}
+          PASSWORD: ${{ secrets[matrix.password_secret] }}
 
-          docker tag "${OLD_IMAGE_BASE}:build-${{ github.run_id }}-amd64" "${NEW_IMAGE_BASE}:build-${{ github.run_id }}-amd64"
-          docker tag "${OLD_IMAGE_BASE}:build-${{ github.run_id }}-arm64" "${NEW_IMAGE_BASE}:build-${{ github.run_id }}-arm64"
+      # The compressed manifest in Quay has a different digest than the local so we
+      # need to use skopeo to retrieve the correct digest for signing
+      - name: Create manifest and push to Quay
+        id: manifest-push
+        run: |
+          make manifest
+          buildah manifest add --arch=amd64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-amd64"
+          buildah manifest add --arch=arm64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-arm64"
+          make upload
+          DIGEST=$(skopeo inspect --format "{{.Digest}}" "docker://${{ env.UPLOADREGISTRY }}/${{ env.CONTAINER }}")
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
+        env:
+          UPLOADREGISTRY: ${{ matrix.upload_registry }}
+          CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
 
-      # Install the cosign tool
-      # https://github.com/sigstore/cosign-installer
       - name: Install cosign
         uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
         with:
           cosign-release: "v2.2.4"
 
-      - name: Log into registry ${{ env.REGISTRY }}
-        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets[matrix.username_secret] }}
-          password: ${{ secrets[matrix.password_secret] }}
-
-      # Push individual architecture images to registry
-      - name: Push architecture-specific images
-        run: |
-          IMAGE_BASE="${{ env.REGISTRY }}/${{ matrix.image_name }}"
-          docker push "${IMAGE_BASE}:build-${{ github.run_id }}-amd64"
-          docker push "${IMAGE_BASE}:build-${{ github.run_id }}-arm64"
-
-      # Extract metadata for multi-arch manifest
-      - name: Extract Docker metadata for manifest
-        id: meta
-        uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ matrix.image_name }}
-          flavor: |
-            latest=${{ github.ref == 'refs/heads/main' }}
-
-      # Create and push multi-arch manifest
-      - name: Create and push multi-arch manifest
-        id: push-manifest
-        run: |
-          IMAGE_BASE="${{ env.REGISTRY }}/${{ matrix.image_name }}"
-
-          # Get the tags from metadata
-          TAGS="${{ steps.meta.outputs.tags }}"
-
-          for TAG in $TAGS; do
-            echo "Creating manifest for: $TAG"
-
-            # Use docker buildx imagetools to create multi-arch manifest
-            docker buildx imagetools create -t "$TAG" \
-              "${IMAGE_BASE}:build-${{ github.run_id }}-amd64" \
-              "${IMAGE_BASE}:build-${{ github.run_id }}-arm64"
-          done
-
-          # Get the digest of the first tag for signing
-          FIRST_TAG=$(echo "$TAGS" | head -n1)
-          DIGEST=$(docker buildx imagetools inspect "$FIRST_TAG" --format '{{json .}}' | jq -r '.manifest.digest')
-          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
-
-      # Sign the resulting Docker image digest
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
+      # Cosign expects the docker config.json for registry authentication so we must
+      # copy it from buildah
       - name: Sign the published Docker image
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.push-manifest.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I "{}" cosign sign --yes "{}@${DIGEST}"
-
-      # Clean up temporary architecture-specific images
-      - name: Clean up temporary images
-        if: always()
         run: |
-          IMAGE_BASE="${{ env.REGISTRY }}/${{ matrix.image_name }}"
-
-          # Try to delete temporary images, ignore errors if they don't exist
-          docker run --rm quay.io/skopeo/stable delete \
-            --creds "${{ secrets[matrix.username_secret] }}:${{ secrets[matrix.password_secret] }}" \
-            docker://"${IMAGE_BASE}:build-${{ github.run_id }}-amd64" || true
-
-          docker run --rm quay.io/skopeo/stable delete \
-            --creds "${{ secrets[matrix.username_secret] }}:${{ secrets[matrix.password_secret] }}" \
-            docker://"${IMAGE_BASE}:build-${{ github.run_id }}-arm64" || true
+          cat ${XDG_RUNTIME_DIR}/containers/auth.json > ~/.docker/config.json
+          cosign sign --yes ${{ matrix.upload_registry }}/${{ env.CONTAINER }}@${{ steps.manifest-push.outputs.digest }}
+        env:
+          CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
