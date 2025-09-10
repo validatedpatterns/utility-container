@@ -61,7 +61,7 @@ jobs:
 
   push-multiarch-manifest:
     needs: [test-container]
-    # if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request'
     strategy:
       matrix:
         include:
