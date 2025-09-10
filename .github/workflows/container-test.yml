@@ -8,7 +8,8 @@ permissions:
 
 env:
   REGISTRY: localhost
-  CONTAINER: utility-container:latest
+  NAME: utility-container
+  TAG: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || (github.ref_name == 'main' && 'latest' || github.ref_name) }}
 
 jobs:
   podman-build:
@@ -27,6 +28,8 @@ jobs:
           path: /tmp
 
       - name: Load tarballs into local containers-storage
+        env:
+          CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
         run: |
           buildah pull docker-archive:/tmp/image-amd64.tar
           make manifest
@@ -36,6 +39,8 @@ jobs:
         run: make test-amd64
 
       - name: Clone MCG and test a target via container
+        env:
+          CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
         run: |
           git clone --depth 1 https://github.com/hybrid-cloud-patterns/multicloud-gitops
           cd multicloud-gitops
