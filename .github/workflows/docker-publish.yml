@@ -107,7 +107,10 @@ jobs:
 
       - name: Log into Quay
         run: |
-          buildah login -u ${{ secrets[matrix.username_secret] }} -p ${{ secrets[matrix.password_secret] }} quay.io
+          buildah login -u ${{ env.USERNAME }} -p ${{ env.PASSWORD }} quay.io
+        env:
+          USERNAME: ${{ secrets[matrix.username_secret] }}
+          PASSWORD: ${{ secrets[matrix.password_secret] }}
 
       - name: Create manifest and push to Quay
         id: manifest-push
