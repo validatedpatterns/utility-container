@@ -12,6 +12,9 @@ on:
   repository_dispatch:
     types: [dependency-updated]
 
+permissions:
+  contents: read
+
 env:
   REGISTRY: localhost
   NAME: utility-container
@@ -34,13 +37,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Build container and save tarball
-        run: |
-          make ${{ matrix.targetarch }}
-          buildah push ${{ env.CONTAINER }}-${{ matrix.targetarch }} docker-archive:/tmp/image-${{ matrix.targetarch }}.tar:${{ env.CONTAINER }}-${{ matrix.targetarch }}
         env:
           CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
+          TARGETARCH: ${{ matrix.targetarch }}
+        run: |
+          make "${TARGETARCH}"
+          buildah push "${CONTAINER}-${TARGETARCH}" "docker-archive:/tmp/image-${TARGETARCH}.tar:${CONTAINER}-${TARGETARCH}"
 
       - name: Upload image artifact
         uses: actions/upload-artifact@v4
@@ -60,11 +66,9 @@ jobs:
       matrix:
         include:
           - upload_registry: quay.io/validatedpatterns
-            username_secret: QUAY_USERNAME
-            password_secret: QUAY_PASSWORD
+            legacy: false
           - upload_registry: quay.io/hybridcloudpatterns
-            username_secret: LEGACY_QUAY_USERNAME
-            password_secret: LEGACY_QUAY_PASSWORD
+            legacy: true
 
     runs-on: ubuntu-latest
     permissions:
@@ -76,6 +80,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Download AMD64 image
         uses: actions/download-artifact@v5
@@ -95,26 +101,26 @@ jobs:
           buildah pull docker-archive:/tmp/image-arm64.tar
 
       - name: Log into Quay
-        run: |
-          buildah login -u ${{ env.USERNAME }} -p ${{ env.PASSWORD }} quay.io
         env:
-          USERNAME: ${{ secrets[matrix.username_secret] }}
-          PASSWORD: ${{ secrets[matrix.password_secret] }}
+          USERNAME: ${{ matrix.legacy && secrets.LEGACY_QUAY_USERNAME || secrets.QUAY_USERNAME }}
+          PASSWORD: ${{ matrix.legacy && secrets.LEGACY_QUAY_PASSWORD || secrets.QUAY_PASSWORD }}
+        run: |
+          buildah login -u "${USERNAME}" -p "${PASSWORD}" quay.io
 
       # The compressed manifest in Quay has a different digest than the local so we
       # need to use skopeo to retrieve the correct digest for signing
       - name: Create manifest and push to Quay
         id: manifest-push
-        run: |
-          make manifest
-          buildah manifest add --arch=amd64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-amd64"
-          buildah manifest add --arch=arm64 "${{ env.LOCAL_IMAGE_NAME }}" "${{ env.LOCAL_IMAGE_NAME }}-arm64"
-          make upload
-          DIGEST=$(skopeo inspect --format "{{.Digest}}" "docker://${{ env.UPLOADREGISTRY }}/${{ env.CONTAINER }}")
-          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
         env:
           UPLOADREGISTRY: ${{ matrix.upload_registry }}
           CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
+        run: |
+          make manifest
+          buildah manifest add --arch=amd64 "${REGISTRY}/${CONTAINER}" "${REGISTRY}/${CONTAINER}-amd64"
+          buildah manifest add --arch=arm64 "${REGISTRY}/${CONTAINER}" "${REGISTRY}/${CONTAINER}-arm64"
+          make upload
+          DIGEST=$(skopeo inspect --format "{{.Digest}}" "docker://${UPLOADREGISTRY}/${CONTAINER}")
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
 
       - name: Install cosign
         uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
@@ -124,8 +130,10 @@ jobs:
       # Cosign expects the docker config.json for registry authentication so we must
       # copy it from buildah
       - name: Sign the published Docker image
-        run: |
-          cat ${XDG_RUNTIME_DIR}/containers/auth.json > ~/.docker/config.json
-          cosign sign --yes ${{ matrix.upload_registry }}/${{ env.CONTAINER }}@${{ steps.manifest-push.outputs.digest }}
         env:
           CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
+          DIGEST: ${{ steps.manifest-push.outputs.digest }}
+          UPLOADREGISTRY: ${{ matrix.upload_registry }}
+        run: |
+          cat "${XDG_RUNTIME_DIR}/containers/auth.json" > ~/.docker/config.json
+          cosign sign --yes "${UPLOADREGISTRY}/${CONTAINER}@${DIGEST}"

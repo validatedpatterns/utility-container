@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+env:
+  REGISTRY: localhost
+  CONTAINER: utility-container:latest
+
 jobs:
   podman-build:
     name: Utility Container Build
@@ -13,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Download AMD64 image
         uses: actions/download-artifact@v5
@@ -24,9 +30,7 @@ jobs:
         run: |
           buildah pull docker-archive:/tmp/image-amd64.tar
           make manifest
-          buildah manifest add --arch=amd64 "${{ env.CONTAINER }}" "${{ env.CONTAINER }}-amd64"
-        env:
-          CONTAINER: utility-container:latest
+          buildah manifest add --arch=amd64 "${REGISTRY}/${CONTAINER}" "${REGISTRY}/${CONTAINER}-amd64"
 
       - name: Run Container tests
         run: make test-amd64
@@ -35,5 +39,5 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/hybrid-cloud-patterns/multicloud-gitops
           cd multicloud-gitops
-          export PATTERN_UTILITY_CONTAINER=localhost/utility-container:latest-amd64
+          export PATTERN_UTILITY_CONTAINER="${REGISTRY}/${CONTAINER}-amd64"
           ./pattern.sh make validate-schema
