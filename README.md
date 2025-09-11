@@ -1,6 +1,6 @@
 # Validated Patterns Utility Container
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square)
+![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square)
 [![Quay Repository](https://img.shields.io/badge/Quay.io-utility--container-blue?logo=quay)](https://quay.io/repository/validatedpatterns/utility-container)
 [![CI Pipeline](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml)
 
@@ -21,16 +21,16 @@ This container provides a pre-configured environment with all the necessary tool
 |           ansible-runner            |    pip     |     2.4.1      |
 |            ansible.utils            | collection |     6.0.0      |
 |               argocd                |   binary   | v2.9.7+fbb6b20 |
-|               awscli                |    pip     |    1.42.25     |
+|               awscli                |    pip     |    1.42.28     |
 |               awx.awx               | collection |     24.6.1     |
 |               awxkit                |    pip     |     24.6.1     |
 |              azure-cli              |    pip     |     2.77.0     |
-|                boto3                |    pip     |    1.40.25     |
-|              botocore               |    pip     |    1.40.25     |
-|          community.general          | collection |     11.2.1     |
+|                boto3                |    pip     |    1.40.28     |
+|              botocore               |    pip     |    1.40.28     |
+|          community.general          | collection |     11.3.0     |
 |            community.okd            | collection |     5.0.0      |
 |               gcloud                |    pip     |     0.18.3     |
-|                 gh                  |  package   |     2.78.0     |
+|                 gh                  |  package   |     2.79.0     |
 |              git-core               |  package   |     2.47.3     |
 |                gzip                 |  package   |      1.12      |
 |                 hcp                 |   binary   |     4.17.0     |
