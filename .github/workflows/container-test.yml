@@ -1,10 +1,15 @@
----
 name: "Container build and test"
 
 on:
   workflow_call:
 
-permissions: read-all
+permissions:
+  contents: read
+
+env:
+  REGISTRY: localhost
+  NAME: utility-container
+  TAG: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || (github.ref_name == 'main' && 'latest' || github.ref_name) }}
 
 jobs:
   podman-build:
@@ -13,16 +18,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
-      - name: Utility Container Build
-        run: make manifest podman-build-amd64
+      - name: Download AMD64 image
+        uses: actions/download-artifact@v5
+        with:
+          name: image-amd64-${{ github.run_id }}
+          path: /tmp
+
+      - name: Load tarballs into local containers-storage
+        env:
+          CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
+        run: |
+          buildah pull docker-archive:/tmp/image-amd64.tar
+          make manifest
+          buildah manifest add --arch=amd64 "${REGISTRY}/${CONTAINER}" "${REGISTRY}/${CONTAINER}-amd64"
 
       - name: Run Container tests
         run: make test-amd64
 
       - name: Clone MCG and test a target via container
+        env:
+          CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
         run: |
           git clone --depth 1 https://github.com/hybrid-cloud-patterns/multicloud-gitops
           cd multicloud-gitops
-          export PATTERN_UTILITY_CONTAINER=localhost/utility-container:latest-amd64
+          export PATTERN_UTILITY_CONTAINER="${REGISTRY}/${CONTAINER}-amd64"
           ./pattern.sh make validate-schema
