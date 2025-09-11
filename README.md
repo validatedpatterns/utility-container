@@ -1,6 +1,6 @@
 # Validated Patterns Utility Container
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square)
+![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square)
 [![Quay Repository](https://img.shields.io/badge/Quay.io-utility--container-blue?logo=quay)](https://quay.io/repository/validatedpatterns/utility-container)
 [![CI Pipeline](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml)
 
