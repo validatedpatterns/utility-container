@@ -3,7 +3,7 @@ name: Build (amd64 and arm64) and push to quay registries
 on:
   push:
     branches: ["main"]
-    tags: ["v*.*.*"]
+    tags: ["v*.*.*", "v*"]
   pull_request:
     branches: ["main"]
 
