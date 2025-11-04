@@ -1,6 +1,6 @@
 # Validated Patterns Utility Container
 
-![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square)
+![Version: 1.0.2](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square)
 [![Quay Repository](https://img.shields.io/badge/Quay.io-utility--container-blue?logo=quay)](https://quay.io/repository/validatedpatterns/utility-container)
 [![CI Pipeline](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml)
 
@@ -18,30 +18,30 @@ This container provides a pre-configured environment with all the necessary tool
 | :---------------------------------: | :--------: | :------------: |
 |               ansible               |    pip     |    2.16.14     |
 |            ansible.posix            | collection |     2.1.0      |
-|           ansible-runner            |    pip     |     2.4.1      |
+|           ansible-runner            |    pip     |     2.4.2      |
 |            ansible.utils            | collection |     6.0.0      |
 |               argocd                |   binary   | v2.9.7+fbb6b20 |
-|               awscli                |    pip     |    1.42.28     |
+|               awscli                |    pip     |    1.42.65     |
 |               awx.awx               | collection |     24.6.1     |
 |               awxkit                |    pip     |     24.6.1     |
-|              azure-cli              |    pip     |     2.77.0     |
-|                boto3                |    pip     |    1.40.28     |
-|              botocore               |    pip     |    1.40.28     |
-|          community.general          | collection |     11.3.0     |
+|              azure-cli              |    pip     |     2.79.0     |
+|                boto3                |    pip     |    1.40.65     |
+|              botocore               |    pip     |    1.40.65     |
+|          community.general          | collection |     12.0.0     |
 |            community.okd            | collection |     5.0.0      |
 |               gcloud                |    pip     |     0.18.3     |
-|                 gh                  |  package   |     2.79.0     |
+|                 gh                  |  package   |     2.82.1     |
 |              git-core               |  package   |     2.47.3     |
 |                gzip                 |  package   |      1.12      |
 |                 hcp                 |   binary   |     4.17.0     |
 |                helm                 |   binary   |    v3.13.3     |
 |       infra.ah_configuration        | collection |     2.1.0      |
-|   infra.controller_configuration    | collection |     3.1.3      |
+|   infra.controller_configuration    | collection |     3.2.0      |
 |       infra.eda_configuration       | collection |     1.1.0      |
 |              jmespath               |    pip     |     1.0.1      |
 |                 jq                  |  package   |      1.6       |
-|           kubernetes.core           | collection |     6.1.0      |
-|             kubernetes              |    pip     |     33.1.0     |
+|           kubernetes.core           | collection |     6.2.0      |
+|             kubernetes              |    pip     |     34.1.0     |
 |              kustomize              |   binary   |     v5.0.1     |
 |                make                 |  package   |      4.3       |
 |              openshift              |   binary   |    4.14.20     |
