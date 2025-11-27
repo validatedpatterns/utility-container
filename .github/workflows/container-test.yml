@@ -42,7 +42,7 @@ jobs:
         env:
           CONTAINER: ${{ env.NAME }}:${{ env.TAG }}
         run: |
-          git clone --depth 1 https://github.com/hybrid-cloud-patterns/multicloud-gitops
+          git clone --depth 1 https://github.com/validatedpatterns/multicloud-gitops
           cd multicloud-gitops
           export PATTERN_UTILITY_CONTAINER="${REGISTRY}/${CONTAINER}-amd64"
           ./pattern.sh make validate-schema
