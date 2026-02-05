@@ -3,4 +3,5 @@
 if [ "${ANSIBLE_STDOUT_CALLBACK}" = "null" ]; then
     export ANSIBLE_STDOUT_CALLBACK="rhvp.cluster_utils.readable"
 fi
+export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
 exec /usr/local/bin/ansible-playbook.orig "$@"
