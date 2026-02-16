@@ -65,20 +65,20 @@ microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
-curl -sfL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-${TARGETARCH} && \
+curl -sSfL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-${TARGETARCH} && \
 chmod +x /usr/local/bin/argocd && \
-curl -sLfO https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
+curl -sSfLO https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
 tar xf helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz --strip-component 1 -C /usr/local/bin && \
 chmod +x /usr/local/bin/helm && rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
 rm -f helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
-curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
+curl -sSfLO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
 tar xf tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
 rm -f tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
 rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
-curl -skLf -o hcp.tar.gz https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VERSION}/hcp-cli-${HYPERSHIFT_VERSION}-linux-${TARGETARCH}.tar.gz && \
+curl -sSfL -o hcp.tar.gz https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VERSION}/hcp-cli-${HYPERSHIFT_VERSION}-linux-${TARGETARCH}.tar.gz && \
 tar xf hcp.tar.gz -C /usr/local/bin/ && \
 rm -f hcp.tar.gz && \
-curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
+curl -sSfLO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
 tar xvf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
 rm -rf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
 curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} && chmod 755 /usr/local/bin/yq && \
@@ -120,7 +120,7 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
 ansible-galaxy collection install --collections-path /usr/share/ansible/collections -r /tmp/requirements.yml && \
 rm -rf /usr/local/lib/python${PYTHON_VERSION}/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
-curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
+curl -sSfL -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python3 azure_sdk_trim.py && rm azure_sdk_trim.py && pip uninstall -y humanize && \
 if [ -n "$EXTRARPMS" ]; then microdnf remove -y $EXTRARPMS; fi && \
 mkdir -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp && \
