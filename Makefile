@@ -102,8 +102,10 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|python package \";  /usr/bin/python3 --version | sed -e s'/Python //' | tr -d '\n';  echo \" \"; \
 		echo -n \"|jq package \"; rpm -q --qf '%{VERSION}' jq;  echo \" \"; \
 		echo -n \"|gh package \"; rpm -q --qf '%{VERSION}' gh;  echo \" \"; \
+		echo -n \"|age binary \"; age --version |tr -d '\n'; echo \" \"; \
 		echo -n \"|argocd binary \"; argocd version --client -o json | jq -j '.client.Version';  echo \" \"; \
 		echo -n \"|helm binary \"; helm version --template '{{ .Version }}';  echo \" \"; \
+		echo -n \"|helmsecrets binary \"; helm plugin list |grep ^secrets | tr '[:blank:]' ' '| cut -f2 -d\  | tr -d '\n';  echo \" \"; \
 		echo -n \"|tea binary \"; tea --version | sed -e 's/Version: //' | sed -e 's/golang.*//' | tr -d '\t' | tr -d '\n';  echo \" \"; \
 		echo -n \"|tekton binary \"; tkn version --component client | tr -d '\n';  echo \" \"; \
 		echo -n \"|openshift binary \"; oc version --client -o json | jq -j '.releaseClientVersion';  echo \" \"; \

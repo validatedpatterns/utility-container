@@ -14,51 +14,50 @@ This container provides a pre-configured environment with all the necessary tool
 
 <!-- textlint-disable -->
 
-|                name                 |    type     |    version     |
-| :---------------------------------: | :---------: | :------------: |
-|                 age                 |   binary    |     1.3.1      |
-|               ansible               |     pip     |    2.16.14     |
-|            ansible.posix            | collection  |     2.1.0      |
-|           ansible-runner            |     pip     |     2.4.2      |
-|            ansible.utils            | collection  |     6.0.0      |
-|               argocd                |   binary    | v2.9.7+fbb6b20 |
-|               awscli                |     pip     |    1.42.65     |
-|               awx.awx               | collection  |     24.6.1     |
-|               awxkit                |     pip     |     24.6.1     |
-|              azure-cli              |     pip     |     2.79.0     |
-|                boto3                |     pip     |    1.40.65     |
-|              botocore               |     pip     |    1.40.65     |
-|          community.general          | collection  |     12.0.0     |
-|            community.okd            | collection  |     5.0.0      |
-|               gcloud                |     pip     |     0.18.3     |
-|                 gh                  |   package   |     2.82.1     |
-|              git-core               |   package   |     2.47.3     |
-|                gzip                 |   package   |      1.12      |
-|                 hcp                 |   binary    |     4.17.0     |
-|                helm                 |   binary    |    v3.13.3     |
-|            helm-secrets             | helm plugin |     4.7.5      |
-|       infra.ah_configuration        | collection  |     2.1.0      |
-|   infra.controller_configuration    | collection  |     3.2.0      |
-|       infra.eda_configuration       | collection  |     1.1.0      |
-|              jmespath               |     pip     |     1.0.1      |
-|                 jq                  |   package   |      1.6       |
-|           kubernetes.core           | collection  |     6.2.0      |
-|             kubernetes              |     pip     |     34.1.0     |
-|              kustomize              |   binary    |     v5.0.1     |
-|                make                 |   package   |      4.3       |
-|              openshift              |   binary    |    4.14.20     |
-|               pytest                |     pip     |     8.4.2      |
-|             python3-pip             |   package   |     21.3.1     |
-|               python                |   package   |    3.11.11     |
-| redhat_cop.controller_configuration | collection  |     2.3.1      |
-|         rhvp.cluster_utils          | collection  |     1.1.0      |
-|                sops                 |   binary    |     3.11.0     |
-|               sshpass               |   package   |      1.09      |
-|                 tar                 |   package   |      1.34      |
-|                 tea                 |   binary    |     0.9.2      |
-|               tekton                |   binary    |     0.35.2     |
-|                 vi                  |   package   |    8.2.2637    |
-|          vp-qe-test-common          |     pip     |     0.1.0      |
+|                name                 |    type     |     version     |
+| :---------------------------------: | :---------: | :-------------: |
+|                 age                 |   binary    |      1.3.1      |
+|               ansible               |     pip     |     2.19.6      |
+|            ansible.posix            | collection  |      2.1.0      |
+|           ansible-runner            |     pip     |      2.4.2      |
+|            ansible.utils            | collection  |      6.0.1      |
+|               argocd                |   binary    | v3.1.12+a46152e |
+|               awscli                |     pip     |     1.44.39     |
+|               awx.awx               | collection  |     24.6.1      |
+|               awxkit                |     pip     |     24.6.1      |
+|              azure-cli              |     pip     |     2.83.0      |
+|                boto3                |     pip     |     1.42.49     |
+|              botocore               |     pip     |     1.42.49     |
+|          community.general          | collection  |     12.3.0      |
+|            community.okd            | collection  |      5.0.0      |
+|               gcloud                |     pip     |     0.18.3      |
+|                 gh                  |   package   |     2.86.0      |
+|              git-core               |   package   |     2.47.3      |
+|                gzip                 |   package   |      1.12       |
+|                 hcp                 |   binary    |     4.17.0      |
+|                helm                 |   binary    |     v3.19.5     |
+|            helm-secrets             | helm plugin |      4.7.5      |
+|       infra.ah_configuration        | collection  |      2.1.0      |
+|   infra.controller_configuration    | collection  |      3.2.2      |
+|       infra.eda_configuration       | collection  |      1.1.0      |
+|              jmespath               |     pip     |      1.1.0      |
+|                 jq                  |   package   |       1.6       |
+|           kubernetes.core           | collection  |      6.3.0      |
+|             kubernetes              |     pip     |     35.0.0      |
+|              kustomize              |   binary    |     v5.6.0      |
+|                make                 |   package   |       4.3       |
+|              openshift              |   binary    |     4.20.14     |
+|               pytest                |     pip     |      9.0.2      |
+|             python3-pip             |   package   |     21.3.1      |
+|               python                |   package   |     3.11.13     |
+| redhat_cop.controller_configuration | collection  |      2.3.1      |
+|         rhvp.cluster_utils          | collection  |      1.1.0      |
+|               sshpass               |   package   |      1.09       |
+|                 tar                 |   package   |      1.34       |
+|                 tea                 |   binary    |      0.9.2      |
+|               tekton                |   binary    |     0.35.2      |
+|                 vi                  |   package   |    8.2.2637     |
+|          vp-qe-test-common          |     pip     |      0.0.1      |
 
 <!-- textlint-enable -->
 
