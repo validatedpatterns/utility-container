@@ -127,10 +127,12 @@ find /pattern/.ansible -type d -exec chmod 770 "{}" \; && \
 find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
 
 
-# Adding python scripts to start, stop and retrieve status of hostedcluster instnances
+# Adding python scripts to start, stop and retrieve status of hostedcluster instances
 ADD https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/start-instances.py \
     https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/stop-instances.py \
     https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/status-instances.py /usr/local/bin/
+
+RUN chmod 755 /usr/local/bin/start-instances.py /usr/local/bin/stop-instances.py /usr/local/bin/status-instances.py
 
 COPY default-cmd.sh /usr/local/bin
 WORKDIR /pattern
