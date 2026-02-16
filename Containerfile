@@ -31,6 +31,9 @@ ARG ARGOCD_VERSION="2.9.7"
 ARG TKN_CLI_VERSION="0.35.2"
 ARG YQ_VERSION="4.40.7"
 ARG TEA_VERSION="0.9.2"
+ARG SOPS_VERSION="3.11.0"
+ARG AGE_VERSION="1.3.1"
+ARG HELM_SECRETS_VERSION="4.7.5"
 
 # As of 9/5/2024: awxkit is not compatible with python 3.12 due to setuptools
 # Ansible-core 2.16 is needed for losing track of async jobs (as noted in AGOF for infra.controller_configuration)
@@ -50,6 +53,8 @@ ARG OPTTARGETARCH
 ARG EXTRARPMS
 
 USER root
+
+ENV HELM_PLUGINS=/etc/helm-plugins
 
 ADD https://cli.github.com/packages/rpm/gh-cli.repo /etc/yum.repos.d/gh-cli.repo
 
@@ -72,6 +77,10 @@ curl -sSfL https://developers.redhat.com/content-gateway/file/pub/mce/clients/hc
 curl -sSfL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz | tar xzf - -C /usr/local/bin oc && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
 curl -sSfL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} -o /usr/local/bin/yq && \
 curl -sSfL https://gitea.com/gitea/tea/releases/download/v${TEA_VERSION}/tea-${TEA_VERSION}-linux-${TARGETARCH} -o /usr/local/bin/tea && \
+curl -sSfL https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${TARGETARCH} -o /usr/local/bin/sops && \
+curl -sSfL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-${TARGETARCH}.tar.gz | tar xzf - --strip-components=1 -C /usr/local/bin age/age* && \
+mkdir -p "${HELM_PLUGINS}" && \
+curl -sSfL https://github.com/jkroepke/helm-secrets/releases/download/v${HELM_SECRETS_VERSION}/helm-secrets.tar.gz | tar xzf - -C "${HELM_PLUGINS}" && \
 chown root:root /usr/local/bin/* && chmod 755 /usr/local/bin/* && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
