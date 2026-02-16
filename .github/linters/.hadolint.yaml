@@ -11,3 +11,5 @@ ignored:
   - DL3041
   # Pin versions in pip. Instead of `pip install <package>` use `pip install
   - DL3013
+  # Disable pipefail shell
+  - DL4006
