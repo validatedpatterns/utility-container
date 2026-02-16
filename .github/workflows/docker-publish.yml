@@ -49,7 +49,7 @@ jobs:
           buildah push "${CONTAINER}-${TARGETARCH}" "docker-archive:/tmp/image-${TARGETARCH}.tar:${CONTAINER}-${TARGETARCH}"
 
       - name: Upload image artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: image-${{ matrix.targetarch }}-${{ github.run_id }}
           path: /tmp/image-${{ matrix.targetarch }}.tar
@@ -84,13 +84,13 @@ jobs:
           persist-credentials: false
 
       - name: Download AMD64 image
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: image-amd64-${{ github.run_id }}
           path: /tmp
 
       - name: Download ARM64 image
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: image-arm64-${{ github.run_id }}
           path: /tmp

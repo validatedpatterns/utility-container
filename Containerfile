@@ -36,12 +36,11 @@ ARG AGE_VERSION="1.3.1"
 ARG HELM_SECRETS_VERSION="4.7.5"
 
 # As of 9/5/2024: awxkit is not compatible with python 3.12 due to setuptools
-# Ansible-core 2.16 is needed for losing track of async jobs (as noted in AGOF for infra.controller_configuration)
+# Ansible-core 2.19 is needed for losing track of async jobs (as noted in AGOF for infra.controller_configuration)
 # 'pip' will be influenced by where /usr/bin/python3 points, which we take care of with the altnernatives
 # command
 ARG PYTHON_VERSION="3.11"
 ARG PYTHON_PKGS="python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python3-pip"
-ARG ANSIBLE_CORE_SPEC="ansible-core==2.16.*"
 
 # amd64 - arm64
 ARG TARGETARCH
@@ -115,9 +114,14 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
 # Add requirements.yml file for ansible collections
 COPY requirements.yml /tmp/requirements.yml
 COPY requirements.txt /tmp/requirements.txt
+COPY ansible-playbook-wrapper.sh /tmp/ansible-playbook-wrapper.sh
 
 RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
 ansible-galaxy collection install --collections-path /usr/share/ansible/collections -r /tmp/requirements.yml && \
+# Create ansible-playbook wrapper that sets ANSIBLE_STDOUT_CALLBACK to rhvp.cluster_utils.readable when it's "null" \
+mv /usr/local/bin/ansible-playbook /usr/local/bin/ansible-playbook.orig && \
+cp /tmp/ansible-playbook-wrapper.sh /usr/local/bin/ansible-playbook && \
+chmod +x /usr/local/bin/ansible-playbook && \
 rm -rf /usr/local/lib/python${PYTHON_VERSION}/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
 curl -sSfL -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python3 azure_sdk_trim.py && rm azure_sdk_trim.py && pip uninstall -y humanize && \
