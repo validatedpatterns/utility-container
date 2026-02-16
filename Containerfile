@@ -25,11 +25,15 @@ ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en la
 ARG RPM_TO_FORCEFULLY_REMOVE="cracklib-dicts"
 # Versions
 ARG OPENSHIFT_CLIENT_VERSION="4.14.20"
+ARG HYPERSHIFT_VERSION="2.7.2-1"
 ARG HELM_VERSION="3.13.3"
 ARG ARGOCD_VERSION="2.9.7"
 ARG TKN_CLI_VERSION="0.35.2"
 ARG YQ_VERSION="4.40.7"
 ARG TEA_VERSION="0.9.2"
+ARG SOPS_VERSION="3.11.0"
+ARG AGE_VERSION="1.3.1"
+ARG HELM_SECRETS_VERSION="4.7.5"
 
 # As of 9/5/2024: awxkit is not compatible with python 3.12 due to setuptools
 # Ansible-core 2.19 is needed for losing track of async jobs (as noted in AGOF for infra.controller_configuration)
@@ -47,10 +51,9 @@ ARG OPTTARGETARCH
 # Extra rpms for specific arches. Needed because on arm64 pip insists on rebuilding psutils
 ARG EXTRARPMS
 
-ARG HYPERSHIFT_VER="2.7.2-1"
-ARG HYPERSHIFT_URL="https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VER}/hcp-cli-${HYPERSHIFT_VER}-linux-${TARGETARCH}.tar.gz"
-
 USER root
+
+ENV HELM_PLUGINS=/etc/helm-plugins
 
 ADD https://cli.github.com/packages/rpm/gh-cli.repo /etc/yum.repos.d/gh-cli.repo
 
@@ -66,24 +69,18 @@ microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
-curl -sfL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-${TARGETARCH} && \
-chmod +x /usr/local/bin/argocd && \
-curl -sLfO https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
-tar xf helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz --strip-component 1 -C /usr/local/bin && \
-chmod +x /usr/local/bin/helm && rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
-rm -f helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
-curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
-tar xf tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
-rm -f tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
-rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
-curl -skLf -o hcp.tar.gz ${HYPERSHIFT_URL} && \
-tar xf hcp.tar.gz -C /usr/local/bin/ && \
-rm -f hcp.tar.gz && \
-curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
-tar xvf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
-rm -rf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
-curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} && chmod 755 /usr/local/bin/yq && \
-curl -sSL -o /usr/local/bin/tea https://gitea.com/gitea/tea/releases/download/v${TEA_VERSION}/tea-${TEA_VERSION}-linux-${TARGETARCH} && chmod 755 /usr/local/bin/tea && \
+curl -sSfL https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-${TARGETARCH} -o /usr/local/bin/argocd && \
+curl -sSfL https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xzf - --strip-components=1 -C /usr/local/bin linux-${TARGETARCH}/helm && \
+curl -sSfL https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz | tar xzf - -C /usr/local/bin tkn && \
+curl -sSfL https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VERSION}/hcp-cli-${HYPERSHIFT_VERSION}-linux-${TARGETARCH}.tar.gz | tar xzf - -C /usr/local/bin ./hcp && \
+curl -sSfL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz | tar xzf - -C /usr/local/bin oc && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
+curl -sSfL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} -o /usr/local/bin/yq && \
+curl -sSfL https://gitea.com/gitea/tea/releases/download/v${TEA_VERSION}/tea-${TEA_VERSION}-linux-${TARGETARCH} -o /usr/local/bin/tea && \
+curl -sSfL https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${TARGETARCH} -o /usr/local/bin/sops && \
+curl -sSfL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-${TARGETARCH}.tar.gz | tar xzf - --strip-components=1 -C /usr/local/bin age/age* && \
+mkdir -p "${HELM_PLUGINS}" && \
+curl -sSfL https://github.com/jkroepke/helm-secrets/releases/download/v${HELM_SECRETS_VERSION}/helm-secrets.tar.gz | tar xzf - -C "${HELM_PLUGINS}" && \
+chown root:root /usr/local/bin/* && chmod 755 /usr/local/bin/* && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
 # The hypershift cli is downloaded directly from the cluster.
@@ -126,7 +123,7 @@ mv /usr/local/bin/ansible-playbook /usr/local/bin/ansible-playbook.orig && \
 cp /tmp/ansible-playbook-wrapper.sh /usr/local/bin/ansible-playbook && \
 chmod +x /usr/local/bin/ansible-playbook && \
 rm -rf /usr/local/lib/python${PYTHON_VERSION}/site-packages/ansible_collections/$COLLECTIONS_TO_REMOVE && \
-curl -L -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
+curl -sSfL -O https://raw.githubusercontent.com/clumio-code/azure-sdk-trim/main/azure_sdk_trim/azure_sdk_trim.py && \
 python3 azure_sdk_trim.py && rm azure_sdk_trim.py && pip uninstall -y humanize && \
 if [ -n "$EXTRARPMS" ]; then microdnf remove -y $EXTRARPMS; fi && \
 mkdir -p /pattern/.ansible/tmp /pattern-home/.ansible/tmp && \
@@ -134,10 +131,12 @@ find /pattern/.ansible -type d -exec chmod 770 "{}" \; && \
 find /pattern-home/.ansible -type d -exec chmod 770 "{}" \;
 
 
-# Adding python scripts to start, stop and retrieve status of hostedcluster instnances
+# Adding python scripts to start, stop and retrieve status of hostedcluster instances
 ADD https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/start-instances.py \
     https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/stop-instances.py \
     https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/status-instances.py /usr/local/bin/
+
+RUN chmod 755 /usr/local/bin/start-instances.py /usr/local/bin/stop-instances.py /usr/local/bin/status-instances.py
 
 COPY default-cmd.sh /usr/local/bin
 WORKDIR /pattern
