@@ -25,6 +25,7 @@ ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en la
 ARG RPM_TO_FORCEFULLY_REMOVE="cracklib-dicts"
 # Versions
 ARG OPENSHIFT_CLIENT_VERSION="4.14.20"
+ARG HYPERSHIFT_VERSION="2.7.2-1"
 ARG HELM_VERSION="3.13.3"
 ARG ARGOCD_VERSION="2.9.7"
 ARG TKN_CLI_VERSION="0.35.2"
@@ -47,9 +48,6 @@ ARG ALTTARGETARCH
 ARG OPTTARGETARCH
 # Extra rpms for specific arches. Needed because on arm64 pip insists on rebuilding psutils
 ARG EXTRARPMS
-
-ARG HYPERSHIFT_VER="2.7.2-1"
-ARG HYPERSHIFT_URL="https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VER}/hcp-cli-${HYPERSHIFT_VER}-linux-${TARGETARCH}.tar.gz"
 
 USER root
 
@@ -77,7 +75,7 @@ curl -sLfO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}
 tar xf tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
 rm -f tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
 rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
-curl -skLf -o hcp.tar.gz ${HYPERSHIFT_URL} && \
+curl -skLf -o hcp.tar.gz https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VERSION}/hcp-cli-${HYPERSHIFT_VERSION}-linux-${TARGETARCH}.tar.gz && \
 tar xf hcp.tar.gz -C /usr/local/bin/ && \
 rm -f hcp.tar.gz && \
 curl -sLfO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
