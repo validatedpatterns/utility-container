@@ -65,24 +65,14 @@ microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
-curl -sSfL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-${TARGETARCH} && \
-chmod +x /usr/local/bin/argocd && \
-curl -sSfLO https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
-tar xf helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz --strip-component 1 -C /usr/local/bin && \
-chmod +x /usr/local/bin/helm && rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
-rm -f helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz && \
-curl -sSfLO https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
-tar xf tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz -C /usr/local/bin --no-same-owner && chmod 755 /usr/local/bin/tkn && \
-rm -f tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz && \
-rm -f /usr/local/bin/README.md && rm -f /usr/local/bin/LICENSE && \
-curl -sSfL -o hcp.tar.gz https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VERSION}/hcp-cli-${HYPERSHIFT_VERSION}-linux-${TARGETARCH}.tar.gz && \
-tar xf hcp.tar.gz -C /usr/local/bin/ && \
-rm -f hcp.tar.gz && \
-curl -sSfLO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz && \
-tar xvf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz -C /usr/local/bin && \
-rm -rf openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz  && rm -f /usr/local/bin/kubectl && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
-curl -sSL -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} && chmod 755 /usr/local/bin/yq && \
-curl -sSL -o /usr/local/bin/tea https://gitea.com/gitea/tea/releases/download/v${TEA_VERSION}/tea-${TEA_VERSION}-linux-${TARGETARCH} && chmod 755 /usr/local/bin/tea && \
+curl -sSfL https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-${TARGETARCH} -o /usr/local/bin/argocd && \
+curl -sSfL https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xzf - --strip-components=1 -C /usr/local/bin linux-${TARGETARCH}/helm && \
+curl -sSfL https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz | tar xzf - -C /usr/local/bin tkn && \
+curl -sSfL https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VERSION}/hcp-cli-${HYPERSHIFT_VERSION}-linux-${TARGETARCH}.tar.gz | tar xzf - -C /usr/local/bin ./hcp && \
+curl -sSfL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz | tar xzf - -C /usr/local/bin oc && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
+curl -sSfL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} -o /usr/local/bin/yq && \
+curl -sSfL https://gitea.com/gitea/tea/releases/download/v${TEA_VERSION}/tea-${TEA_VERSION}-linux-${TARGETARCH} -o /usr/local/bin/tea && \
+chown root:root /usr/local/bin/* && chmod 755 /usr/local/bin/* && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README
 
 # The hypershift cli is downloaded directly from the cluster.
