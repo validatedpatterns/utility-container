@@ -168,7 +168,7 @@ super-linter: ## Runs super linter locally
 .PHONY: upload
 upload: ## Uploads the container to quay.io/validatedpatterns/${CONTAINER}
 	@echo "Uploading the ${REGISTRY}/${CONTAINER} container to ${UPLOADREGISTRY}/${CONTAINER}"
-	buildah manifest push --all "${REGISTRY}/${CONTAINER}" "docker://${UPLOADREGISTRY}/${CONTAINER}"
+	buildah manifest push --all --format v2s2 "${REGISTRY}/${CONTAINER}" "docker://${UPLOADREGISTRY}/${CONTAINER}"
 
 .PHONY: clean
 clean: ## Removes any previously built artifact

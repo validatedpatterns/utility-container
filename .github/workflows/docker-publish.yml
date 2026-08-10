@@ -46,7 +46,7 @@ jobs:
           TARGETARCH: ${{ matrix.targetarch }}
         run: |
           make "${TARGETARCH}"
-          buildah push "${CONTAINER}-${TARGETARCH}" "docker-archive:/tmp/image-${TARGETARCH}.tar:${CONTAINER}-${TARGETARCH}"
+          buildah push --format v2s2 "${CONTAINER}-${TARGETARCH}" "docker-archive:/tmp/image-${TARGETARCH}.tar:${CONTAINER}-${TARGETARCH}"
 
       - name: Upload image artifact
         uses: actions/upload-artifact@v7
