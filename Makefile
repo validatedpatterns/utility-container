@@ -75,48 +75,43 @@ test-arm64: ## Prints the test of most tools inside the container arm64
 .PHONY: test
 test: test-amd64 test-arm64 ## Tests the container for all the required bits both arm64 and amd64
 
-##@ Run and upload tasks
-.PHONY: versions
-versions: ## Print all the versions of software in the locally-built container
-	@podman run --rm -it --net=host \
+VERSION ?=$(shell git describe --tags --abbrev=0 2>/dev/null || echo "N/A")
+.PHONY: gen-docs
+gen-docs: ## Print all the versions of software in the locally-built container
+	@echo "Extracting versions and updating README.md..."
+	@SOFTWARE_MANIFEST=$$(podman run --rm --net=host \
 		--security-opt label=disable \
 		-v ${HOME}:/pattern \
 		-v ${HOME}:${HOME} \
-		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh -c \
-		"set -e; \
-		echo -n \"|sshpass package \"; rpm -q --queryformat '%{VERSION}' sshpass; echo \" \"; \
-		echo -n \"|python3-pip package \"; rpm -q --queryformat '%{VERSION}' python3-pip; echo \" \"; \
-		echo -n \"|git-core package \"; rpm -q --qf '%{VERSION}' git-core; echo \" \"; \
-		echo -n \"|vi package \"; rpm -q --qf '%{VERSION}' vim-minimal; echo \" \";  \
-		echo -n \"|tar package \"; rpm -q --qf '%{VERSION}' tar;  echo \" \"; \
-		echo -n \"|gzip package \"; rpm -q --qf '%{VERSION}' gzip;  echo \" \"; \
-		echo -n \"|make package \"; rpm -q --qf '%{VERSION}' make;  echo \" \"; \
-		echo -n \"|python package \";  /usr/bin/python3 --version | sed -e s'/Python //' | tr -d '\n';  echo \" \"; \
-		echo -n \"|jq package \"; rpm -q --qf '%{VERSION}' jq;  echo \" \"; \
-		echo -n \"|age binary \"; age --version |tr -d '\n'; echo \" \"; \
-		echo -n \"|helm binary \"; helm version --template '{{ .Version }}';  echo \" \"; \
-		echo -n \"|helmsecrets binary \"; helm plugin list |grep ^secrets | tr '[:blank:]' ' '| cut -f2 -d\  | tr -d '\n';  echo \" \"; \
-		echo -n \"|tea binary \"; tea --version | sed -e 's/Version: //' | sed -e 's/golang.*//' | tr -d '\t' | tr -d '\n';  echo \" \"; \
-		echo -n \"|openshift binary \"; oc version --client -o json | jq -j '.releaseClientVersion';  echo \" \"; \
-		echo -n \"|kustomize binary \"; oc version --client -o json | jq -j '.kustomizeVersion';  echo \" \"; \
-		echo -n \"|pytest pip \"; pip show pytest | grep ^Version | cut -f2 -d\  |tr -d '\n'; echo \" \"; \
-		echo -n \"|ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d '\n]';  echo \" \"; \
-		echo -n \"|kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
-		echo -n \"|boto3 pip \"; pip show boto3 | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
-		echo -n \"|botocore pip \"; pip show botocore | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
-		echo -n \"|awscli pip \"; pip show awscli | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
-		echo -n \"|azure-cli pip \"; pip show azure-cli | grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
-		echo -n \"|gcloud pip \"; pip show gcloud| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
-		echo -n \"|jmespath pip \"; pip show jmespath| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
-		echo -n \"|ansible-runner pip \"; pip show ansible-runner| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
-		echo -n \"|vp-qe-test-common pip \"; pip show vp-qe-test-common | grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
-		echo -n \"|kubernetes.core collection \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-		echo -n \"|community.okd collection \";  ansible-galaxy collection list community.okd |grep ^community.okd | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-		echo -n \"|community.general collection \";  ansible-galaxy collection list community.general |grep ^community.general | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-		echo -n \"|ansible.posix collection \";  ansible-galaxy collection list ansible.posix |grep ^ansible.posix | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-		echo -n \"|ansible.utils collection \";  ansible-galaxy collection list ansible.utils |grep ^ansible.utils | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-		echo -n \"|rhvp.cluster_utils collection \";  ansible-galaxy collection list rhvp.cluster_utils |grep ^rhvp.cluster_utils | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-    " | sort | column --table -o '|'
+		-w $$(pwd) "${REGISTRY}/${CONTAINER}-amd64" sh -c " \
+		set -e; \
+		for pkg in sshpass python3-pip git-core jq tar gzip make vim-minimal; do \
+			echo \"\$$pkg package \$$(rpm -q --queryformat '%{VERSION}' \$$pkg )\"; \
+		done; \
+		for pip_pkg in \$$(awk -F'[=>@#]' '{print \$$1}' requirements.txt | xargs); do \
+			[ -z \"\$$pip_pkg\" ] && continue; \
+			echo \"\$$pip_pkg pip \$$(pip show \$$pip_pkg | awk '/^Version:/ {print \$$2}')\"; \
+		done; \
+		for coll in \$$(yq '.collections[].name' requirements.yml 2>/dev/null); do \
+			echo \"\$$coll collection \$$(ansible-galaxy collection list \$$coll 2>/dev/null | grep \"^\$$coll\" | awk '{print \$$2}')\"; \
+		done; \
+		echo \"python package \$$(/usr/bin/python3 --version 2>/dev/null | awk '{print \$$2}')\"; \
+		echo \"age binary \$$(age --version 2>/dev/null)\"; \
+		echo \"helm binary \$$(helm version --template '{{ .Version }}' 2>/dev/null)\"; \
+		echo \"helmsecrets binary \$$(helm plugin list 2>/dev/null | awk '/^secrets/ {print \$$2}')\"; \
+		echo \"tea binary \$$(tea --version 2>/dev/null | awk '/^Version:/ {print \$$2}')\"; \
+		echo \"openshift binary \$$(oc version --client -o json 2>/dev/null | jq -j '.releaseClientVersion')\"; \
+		echo \"kustomize binary \$$(oc version --client -o json 2>/dev/null | jq -j '.kustomizeVersion')\"; \
+		echo \"ansible pip \$$(ansible --version -o json 2>/dev/null | grep core | awk '{print \$$3}' | tr -d '\"],')\"; \
+		" | sed -e 's/\x1b\[[0-9;]*m//g' | sort | awk '{print "| " $$1 " | " $$2 " | " $$3 " |"}'); \
+	\
+	awk -v version="$(VERSION)" -v table="$$SOFTWARE_MANIFEST" ' \
+		{ \
+			gsub(/__VERSION__/, version); \
+			gsub(/__SOFTWARE_TABLE__/, table); \
+			print; \
+		}' README.tpl.md > README.md
+
 
 .PHONY: run
 run: ## Runs the container interactively
@@ -135,8 +130,6 @@ super-linter: ## Runs super linter locally
 					-e VALIDATE_DOCKERFILE_HADOLINT=false \
 					-e VALIDATE_JSON_PRETTIER=false \
 					-e VALIDATE_MARKDOWN_PRETTIER=false \
-					-e VALIDATE_MARKDOWN_PRETTIER=false \
-					-e VALIDATE_NATURAL_LANGUAGE=false \
 					-e VALIDATE_PYTHON_PYLINT=false \
 					-e VALIDATE_SHELL_SHFMT=false \
 					-e VALIDATE_TRIVY=false \
