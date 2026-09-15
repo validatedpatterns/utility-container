@@ -25,10 +25,7 @@ ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en la
 ARG RPM_TO_FORCEFULLY_REMOVE="cracklib-dicts"
 # Versions
 ARG OPENSHIFT_CLIENT_VERSION="4.20.14"
-ARG HYPERSHIFT_VERSION="2.7.2-1"
 ARG HELM_VERSION="3.19.5"
-ARG ARGOCD_VERSION="3.1.12"
-ARG TKN_CLI_VERSION="0.35.2"
 ARG YQ_VERSION="4.40.7"
 ARG TEA_VERSION="0.9.2"
 ARG SOPS_VERSION="3.11.0"
@@ -57,9 +54,6 @@ USER root
 COPY requirements.yml requirements.txt ansible-playbook-wrapper.sh  /tmp/
 COPY default-cmd.sh /usr/local/bin
 
-# The hypershift cli is downloaded directly from the cluster.
-# This could change when HCP goes GA - the alternative would
-# be to compile our own, so this seemed the logical choice.
 # Adding python scripts to start, stop and retrieve status of hostedcluster instances
 ADD --chmod=755 https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/start-instances.py \
     https://raw.githubusercontent.com/validatedpatterns/utilities/main/aws-tools/stop-instances.py \
@@ -90,16 +84,13 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
 ENV HELM_PLUGINS=/etc/helm-plugins
 
-RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass gzip gh ${PYTHON_PKGS} $EXTRARPMS && \
+RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass gzip ${PYTHON_PKGS} $EXTRARPMS && \
 microdnf remove -y $DNF_TO_REMOVE && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
 alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 0 && \
-curl -sSfL https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-${TARGETARCH} -o /usr/local/bin/argocd && \
 curl -sSfL https://get.helm.sh/helm-v${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | tar xzf - --strip-components=1 -C /usr/local/bin linux-${TARGETARCH}/helm && \
-curl -sSfL https://github.com/tektoncd/cli/releases/download/v${TKN_CLI_VERSION}/tkn_${TKN_CLI_VERSION}_Linux_${ALTTARGETARCH}.tar.gz | tar xzf - -C /usr/local/bin tkn && \
-curl -sSfL https://developers.redhat.com/content-gateway/file/pub/mce/clients/hcp-cli/${HYPERSHIFT_VERSION}/hcp-cli-${HYPERSHIFT_VERSION}-linux-${TARGETARCH}.tar.gz | tar xzf - -C /usr/local/bin ./hcp && \
 curl -sSfL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPTTARGETARCH}${OPENSHIFT_CLIENT_VERSION}.tar.gz | tar xzf - -C /usr/local/bin oc && ln -sf /usr/local/bin/oc /usr/local/bin/kubectl && \
 curl -sSfL https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} -o /usr/local/bin/yq && \
 curl -sSfL https://gitea.com/gitea/tea/releases/download/v${TEA_VERSION}/tea-${TEA_VERSION}-linux-${TARGETARCH} -o /usr/local/bin/tea && \
