@@ -5,19 +5,11 @@ CONTAINER ?= $(NAME):$(TAG)
 REGISTRY ?= localhost
 UPLOADREGISTRY ?= quay.io/validatedpatterns
 TESTCOMMAND := "set -e; echo '* Helm: '; helm version; \
-		echo '* ArgoCD: '; argocd version --client ; \
-		echo '* Tekton: '; tkn version ; \
 		echo '* oc: '; oc version ; \
 		echo '* yq: '; yq --version ; \
-		echo '* gh: '; gh version ; \
 		echo '* Python: '; python --version ; \
 		echo '* Ansible: '; ansible --version ; \
 		echo '* kubernetes.core: '; ansible-galaxy collection list | grep kubernetes.core ; \
-		echo '* redhat_cop.controller_configuration: '; ansible-galaxy collection list | grep redhat_cop.controller_configuration ; \
-		echo '* infra.controller_configuration: '; ansible-galaxy collection list | grep infra.controller_configuration ; \
-		echo '* infra.eda_configuration: '; ansible-galaxy collection list | grep infra.eda_configuration ; \
-		echo '* infra.ah_configuration: '; ansible-galaxy collection list | grep infra.ah_configuration ; \
-		echo '* awx.awx: '; ansible-galaxy collection list | grep awx.awx ; \
 		echo '* community.general: '; ansible-galaxy collection list | grep community.general ; \
 		echo '* ansible.posix: '; ansible-galaxy collection list | grep ansible.posix ; \
 		echo '* ansible.utils: '; ansible-galaxy collection list | grep ansible.utils ; \
@@ -101,16 +93,12 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|make package \"; rpm -q --qf '%{VERSION}' make;  echo \" \"; \
 		echo -n \"|python package \";  /usr/bin/python3 --version | sed -e s'/Python //' | tr -d '\n';  echo \" \"; \
 		echo -n \"|jq package \"; rpm -q --qf '%{VERSION}' jq;  echo \" \"; \
-		echo -n \"|gh package \"; rpm -q --qf '%{VERSION}' gh;  echo \" \"; \
 		echo -n \"|age binary \"; age --version |tr -d '\n'; echo \" \"; \
-		echo -n \"|argocd binary \"; argocd version --client -o json | jq -j '.client.Version';  echo \" \"; \
 		echo -n \"|helm binary \"; helm version --template '{{ .Version }}';  echo \" \"; \
 		echo -n \"|helmsecrets binary \"; helm plugin list |grep ^secrets | tr '[:blank:]' ' '| cut -f2 -d\  | tr -d '\n';  echo \" \"; \
 		echo -n \"|tea binary \"; tea --version | sed -e 's/Version: //' | sed -e 's/golang.*//' | tr -d '\t' | tr -d '\n';  echo \" \"; \
-		echo -n \"|tekton binary \"; tkn version --component client | tr -d '\n';  echo \" \"; \
 		echo -n \"|openshift binary \"; oc version --client -o json | jq -j '.releaseClientVersion';  echo \" \"; \
 		echo -n \"|kustomize binary \"; oc version --client -o json | jq -j '.kustomizeVersion';  echo \" \"; \
-		echo -n \"|hcp binary \"; hcp version --client-only | cut -f4 -d: | tr -d '\n';  echo \" \"; \
 		echo -n \"|pytest pip \"; pip show pytest | grep ^Version | cut -f2 -d\  |tr -d '\n'; echo \" \"; \
 		echo -n \"|ansible pip \"; ansible --version -o json | grep core | cut -f3 -d\ | tr -d '\n]';  echo \" \"; \
 		echo -n \"|kubernetes pip \"; pip show kubernetes |grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
@@ -119,21 +107,15 @@ versions: ## Print all the versions of software in the locally-built container
 		echo -n \"|awscli pip \"; pip show awscli | grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
 		echo -n \"|azure-cli pip \"; pip show azure-cli | grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
 		echo -n \"|gcloud pip \"; pip show gcloud| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
-		echo -n \"|awxkit pip \"; pip show awxkit| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
 		echo -n \"|jmespath pip \"; pip show jmespath| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
 		echo -n \"|ansible-runner pip \"; pip show ansible-runner| grep ^Version: | cut -f2 -d\ |tr -d '\n';  echo \" \"; \
 		echo -n \"|vp-qe-test-common pip \"; pip show vp-qe-test-common | grep ^Version: | cut -f2 -d\ | tr -d '\n';  echo \" \"; \
 		echo -n \"|kubernetes.core collection \";  ansible-galaxy collection list kubernetes.core |grep ^kubernetes.core | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|community.okd collection \";  ansible-galaxy collection list community.okd |grep ^community.okd | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|community.general collection \";  ansible-galaxy collection list community.general |grep ^community.general | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-		echo -n \"|awx.awx collection \";  ansible-galaxy collection list awx.awx |grep ^awx.awx | tr -s ' ' | cut -f2 -d ' '  |tr -d '\n';  echo \" \"; \
 		echo -n \"|ansible.posix collection \";  ansible-galaxy collection list ansible.posix |grep ^ansible.posix | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|ansible.utils collection \";  ansible-galaxy collection list ansible.utils |grep ^ansible.utils | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
 		echo -n \"|rhvp.cluster_utils collection \";  ansible-galaxy collection list rhvp.cluster_utils |grep ^rhvp.cluster_utils | cut -f2 -d\  |tr -d '\n';  echo \" \"; \
-		echo -n \"|redhat_cop.controller_configuration collection \";  ansible-galaxy collection list redhat_cop.controller_configuration |grep ^redhat_cop.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
-		echo -n \"|infra.controller_configuration collection \";  ansible-galaxy collection list infra.controller_configuration |grep ^infra.controller_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
-		echo -n \"|infra.eda_configuration collection \";  ansible-galaxy collection list infra.eda_configuration |grep ^infra.eda_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
-		echo -n \"|infra.ah_configuration collection \";  ansible-galaxy collection list infra.ah_configuration |grep ^infra.ah_configuration | cut -f2 -d\ | tr -d '\n'; echo \" \";  \
     " | sort | column --table -o '|'
 
 .PHONY: run

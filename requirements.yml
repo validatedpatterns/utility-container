@@ -5,11 +5,9 @@ collections:
   - name: ansible.utils
   - name: kubernetes.core
   - name: community.okd
-  - name: redhat_cop.controller_configuration
-  - name: infra.controller_configuration
-  - name: infra.eda_configuration
-  - name: infra.ah_configuration
   - name: community.general
-  - name: awx.awx
   - name: amazon.aws
-  - name: git+https://github.com/validatedpatterns/rhvp.cluster_utils.git,v1
+  - name: rhvp.cluster_utils
+    source: https://github.com/validatedpatterns/rhvp.cluster_utils.git
+    type: git
+    version: v1
