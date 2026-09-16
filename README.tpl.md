@@ -1,6 +1,6 @@
 # Validated Patterns Utility Container
 
-![Version: v1.0.5 ](https://img.shields.io/badge/Version-v1.0.5-informational?style=flat-square)
+![Version: __VERSION__ ](https://img.shields.io/badge/Version-__VERSION__-informational?style=flat-square)
 [![Quay Repository](https://img.shields.io/badge/Quay.io-utility--container-blue?logo=quay)](https://quay.io/repository/validatedpatterns/utility-container)
 [![CI Pipeline](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/validatedpatterns/utility-container/actions/workflows/docker-publish.yml)
 
@@ -14,41 +14,7 @@ This container provides a pre-configured environment with all the necessary tool
 
 | name | type | version |
 | :--- | :--- | :--- |
-| age | binary | v1.3.1 |
-| amazon.aws | collection | 11.4.0 |
-| ansible-core | pip | 2.18.19 |
-| ansible | pip | 2.18.19 |
-| ansible.posix | collection | 2.2.2 |
-| ansible-runner | pip | 2.4.3 |
-| ansible.utils | collection | 6.1.0 |
-| awscli | pip | 1.46.1 |
-| azure-cli | pip | 2.90.0 |
-| boto3 | pip | 1.43.94 |
-| botocore | pip | 1.43.94 |
-| community.general | collection | 13.4.0 |
-| community.okd | collection | 6.0.0 |
-| gcloud | pip | 0.18.3 |
-| git-core | package | 2.52.0 |
-| gzip | package | 1.12 |
-| helm | binary | v3.19.5 |
-| helmsecrets | binary | 4.7.5 |
-| jq | package | 1.6 |
-| kubernetes.core | collection | 6.5.0 |
-| kubernetes | pip | 35.0.0 |
-| kustomize | binary | v5.6.0 |
-| make | package | 4.3 |
-| openshift | binary | 4.20.14 |
-| openshift | pip | 0.13.2 |
-| pytest | pip | 9.1.1 |
-| pytest-playwright | pip | 0.9.0 |
-| python3-pip | package | 21.3.1 |
-| python | package | 3.11.13 |
-| rhvp.cluster_utils | collection | 1.1.0 |
-| sshpass | package | 1.09 |
-| tar | package | 1.34 |
-| tea | binary | 0.9.2 |
-| vim-minimal | package | 8.2.2637 |
-| vp-qe-test-common | pip | 0.0.1 |
+__SOFTWARE_TABLE__
 
 ## Usage
 

@@ -21,7 +21,7 @@ LABEL org.opencontainers.image.title="${TITLE}" \
       description="${DESCRIPTION}"
 
 ARG COLLECTIONS_TO_REMOVE="fortinet cisco dellemc f5networks junipernetworks mellanox netapp"
-ARG DNF_TO_REMOVE="dejavu-sans-fonts langpacks-core-font-en langpacks-core-en langpacks-en"
+ARG DNF_TO_REMOVE=''
 ARG RPM_TO_FORCEFULLY_REMOVE="cracklib-dicts"
 # Versions
 ARG OPENSHIFT_CLIENT_VERSION="4.20.14"
@@ -38,6 +38,7 @@ ARG HELM_SECRETS_VERSION="4.7.5"
 # command
 ARG PYTHON_VERSION="3.11"
 ARG PYTHON_PKGS="python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python3-pip"
+ARG PLAYWRIGHT_PKGS="atk at-spi2-atk cups-libs libdrm libxkbcommon libxcb libXcomposite libXdamage libXext libXfixes libXrandr libgbm pango alsa-lib nss nspr expat"
 
 # amd64 - arm64
 ARG TARGETARCH
@@ -84,8 +85,8 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
 ENV HELM_PLUGINS=/etc/helm-plugins
 
-RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass gzip ${PYTHON_PKGS} $EXTRARPMS && \
-microdnf remove -y $DNF_TO_REMOVE && \
+RUN microdnf --disableplugin=subscription-manager install -y make git-core tar vi jq which findutils diffutils sshpass gzip ${PYTHON_PKGS} ${PLAYWRIGHT_PKGS} $EXTRARPMS && \
+if [ -n "$DNF_TO_REMOVE" ]; then microdnf remove -y $DNF_TO_REMOVE; fi && \
 rpm -e --nodeps $RPM_TO_FORCEFULLY_REMOVE && \
 microdnf clean all && \
 rm -rf /var/cache/dnf && \
@@ -102,6 +103,7 @@ chown root:root /usr/local/bin/* && chmod 755 /usr/local/bin/* && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README && \
 pip install --no-cache-dir --no-compile -r /tmp/requirements.txt && \
 ansible-galaxy collection install --collections-path /usr/share/ansible/collections -r /tmp/requirements.yml && \
+playwright install --only-shell chromium && \
 # Create ansible-playbook wrapper that sets ANSIBLE_STDOUT_CALLBACK to rhvp.cluster_utils.readable when it's "null" \
 mv /usr/local/bin/ansible-playbook /usr/local/bin/ansible-playbook.orig && \
 mv /tmp/ansible-playbook-wrapper.sh /usr/local/bin/ansible-playbook && \

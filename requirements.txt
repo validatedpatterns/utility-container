@@ -8,4 +8,5 @@ awscli>=1.22
 azure-cli>=2.34
 gcloud
 pytest
+pytest-playwright
 vp-qe-test-common @ git+https://github.com/validatedpatterns/vp-qe-test-common.git@v1#egg=vp-qe-test-common
