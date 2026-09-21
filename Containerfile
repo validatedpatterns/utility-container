@@ -103,7 +103,7 @@ chown root:root /usr/local/bin/* && chmod 755 /usr/local/bin/* && \
 rm -rf /root/anaconda* /root/original-ks.cfg /usr/local/README && \
 pip install --no-cache-dir --no-compile -r /tmp/requirements.txt && \
 ansible-galaxy collection install --collections-path /usr/share/ansible/collections -r /tmp/requirements.yml && \
-playwright install --only-shell chromium && \
+HOME=/playwright playwright install --only-shell chromium && \
 # Create ansible-playbook wrapper that sets ANSIBLE_STDOUT_CALLBACK to rhvp.cluster_utils.readable when it's "null" \
 mv /usr/local/bin/ansible-playbook /usr/local/bin/ansible-playbook.orig && \
 mv /tmp/ansible-playbook-wrapper.sh /usr/local/bin/ansible-playbook && \
