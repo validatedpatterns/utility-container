@@ -38,7 +38,7 @@ ARG HELM_SECRETS_VERSION="4.7.5"
 # command
 ARG PYTHON_VERSION="3.11"
 ARG PYTHON_PKGS="python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python3-pip"
-ARG PLAYWRIGHT_PKGS="atk at-spi2-atk cups-libs libdrm libxkbcommon libxcb libXcomposite libXdamage libXext libXfixes libXrandr libgbm pango alsa-lib nss nspr expat"
+ARG PLAYWRIGHT_PKGS="atk at-spi2-atk cups-libs libatomic libdrm libxkbcommon libxcb libXcomposite libXdamage libXext libXfixes libXrandr libgbm pango alsa-lib nss nspr expat"
 
 # amd64 - arm64
 ARG TARGETARCH
